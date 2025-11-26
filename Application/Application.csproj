@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="AuditLogs\Dtos\" />
+    <Folder Include="AuditLogs\Interfaces\" />
+    <Folder Include="AuditLogs\Validations\" />
+    <Folder Include="Employees\Validations\" />
+    <Folder Include="PaymentMethods\Validations\" />
+    <Folder Include="Products\Validations\" />
+    <Folder Include="ProviderMovements\Dtos\" />
+    <Folder Include="ProviderMovements\Interfaces\" />
+    <Folder Include="ProviderMovements\Validations\" />
+    <Folder Include="Providers\Validations\" />
+    <Folder Include="SaleDetails\Dtos\" />
+    <Folder Include="SaleDetails\Interfaces\" />
+    <Folder Include="SaleDetails\Validations\" />
+    <Folder Include="Sales\Validations\" />
+    <Folder Include="Sessions\Validations\" />
+    <Folder Include="Users\Dtos\" />
+    <Folder Include="Users\Validations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+</Project>

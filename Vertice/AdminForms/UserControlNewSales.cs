@@ -1,0 +1,493 @@
+﻿using Application.PaymentMethods.Dtos;
+using Application.PaymentMethods.Interfaces;
+using Application.Products.Interfaces;
+using Application.Sales.Dtos;
+using Application.Sales.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using WinForms.Helpers;
+using WinForms.PopUps;
+
+namespace WinForms
+{
+    public partial class UserControlNewSales : UserControl
+    {
+        private readonly ISaleService _saleService;
+        private readonly IProductService _productService;
+        private readonly IPaymentMethodService _paymentMethodService;
+        private readonly IServiceProvider _serviceProvider;
+
+        private BindingList<SaleItemViewModel> _cartItems;
+        private List<PaymentMethodGridDto> _paymentMethods = new List<PaymentMethodGridDto>();
+
+        private int? _lastSaleId = null;
+        private CreateSaleDto? _lastSaleDto = null;
+        private decimal _lastSaleTotal = 0;
+        private decimal _currentTotal = 0;
+        private const string CODIGO_VARIOS = "VARIOS";
+
+        public UserControlNewSales(
+            ISaleService saleService,
+            IProductService productService,
+            IPaymentMethodService paymentMethodService,
+            IServiceProvider serviceProvider)
+        {
+            InitializeComponent();
+            _saleService = saleService;
+            _productService = productService;
+            _paymentMethodService = paymentMethodService;
+            _serviceProvider = serviceProvider;
+
+            _cartItems = new BindingList<SaleItemViewModel>();
+        }
+
+        private async void UserControlNewSales_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                dgvSaleProducts.DataSource = _cartItems;
+
+                ConfigGrid();
+
+                await LoadPaymentMethods();
+
+                txtProduct.Focus();
+                UpdateCalcs();
+                if (lblLastProduct != null) lblLastProduct.Text = "Listo para vender...";
+
+                CheckPaymentMethodVisibility();
+
+                if (btnShowLastSale != null) btnShowLastSale.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al iniciar pantalla de ventas: " + ex.Message);
+            }
+        }
+
+        private async Task LoadPaymentMethods()
+        {
+            var methods = await _paymentMethodService.GetAllForGridAsync();
+            _paymentMethods = methods.ToList();
+
+            cbxPaymentMethod.DataSource = _paymentMethods;
+            cbxPaymentMethod.DisplayMember = "Name";
+            cbxPaymentMethod.ValueMember = "Id";
+        }
+
+        private async void txtProduct_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                string input = txtProduct.Text.Trim();
+
+                if (!string.IsNullOrEmpty(input))
+                {
+                    string code = input;
+                    int quantity = 1;
+
+                    //Si el usuario escribió "CANTIDAD * CODIGO" (ej: 6*7791234)
+                    if (input.Contains("*"))
+                    {
+                        var parts = input.Split('*');
+                        if (parts.Length == 2 && int.TryParse(parts[0], out int parsedQty))
+                        {
+                            quantity = parsedQty;
+                            code = parts[1].Trim();
+                        }
+                    }
+
+                    if (quantity > 0 && !string.IsNullOrEmpty(code))
+                    {
+                        await AddProducts(code, quantity);
+                        txtProduct.Text = "";
+                        txtProduct.Focus();
+                    }
+                }
+            }
+        }
+
+        private async Task AddProducts(string code, int quantityToAdd)
+        {
+            try
+            {
+                var product = await _productService.GetProductForEditAsync(code);
+
+                if (product == null)
+                {
+                    MessageBox.Show("Producto no encontrado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!product.IsActive)
+                {
+                    MessageBox.Show($"El producto '{product.Name}' está inactivo.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Validar stock base (si ni siquiera hay 1)
+                if (product.Stock <= 0)
+                {
+                    MessageBox.Show($"El producto '{product.Name}' no tiene stock.", "Sin Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                //Validación de Stock Acumulado
+                var existingItem = _cartItems.FirstOrDefault(x => x.ProductCode == product.Code);
+                int currentQtyInCart = existingItem?.Quantity ?? 0;
+
+                //Lo que ya tengo en carrito + Lo que quiero agregar
+                if (currentQtyInCart + quantityToAdd > product.Stock)
+                {
+                    MessageBox.Show($"Stock insuficiente para '{product.Name}'.\nStock Real: {product.Stock}\nEn Carrito: {currentQtyInCart}\nIntentando agregar: {quantityToAdd}", "Stock Insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                //Agregar o Actualizar
+                if (existingItem != null)
+                {
+                    existingItem.Quantity += quantityToAdd;
+                    _cartItems.ResetItem(_cartItems.IndexOf(existingItem));
+                }
+                else
+                {
+                    _cartItems.Add(new SaleItemViewModel
+                    {
+                        ProductCode = product.Code,
+                        ProductName = product.Name,
+                        UnitPrice = product.SalePrice,
+                        Quantity = quantityToAdd
+                    });
+                }
+
+                if (lblLastProduct != null)
+                {
+                    string lastProduct = $"{product.Name} (x{quantityToAdd})".ToUpper();
+                    lblLastProduct.Text = lastProduct;
+                    lblLastProduct.ForeColor = System.Drawing.Color.Green;
+                }
+
+                UpdateCalcs();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar producto: " + ex.Message);
+            }
+        }
+
+        private void UpdateCalcs()
+        {
+            decimal subtotal = _cartItems.Sum(x => x.Subtotal);
+
+            if (lblSubTotal != null) lblSubTotal.Text = $"SUBTOTAL\n {subtotal.ToString("C2")}";
+
+            decimal totalFinal = subtotal;
+
+            if (cbxPaymentMethod.SelectedItem is PaymentMethodGridDto metodo)
+            {
+                decimal factor = 1 + ((metodo.Recharge - metodo.Discount) / 100m);
+                totalFinal = subtotal * factor;
+                /*
+                if (lblRecargoDescuento != null)
+                {
+                    if (metodo.Recharge > 0)
+                        lblRecargoDescuento.Text = $"Recargo: {metodo.Recharge}%";
+                    else if (metodo.Discount > 0)
+                        lblRecargoDescuento.Text = $"Descuento: {metodo.Discount}%";
+                    else
+                        lblRecargoDescuento.Text = "-";
+                }*/
+            }
+
+            _currentTotal = totalFinal;
+
+            lblTotal.Text = $"TOTAL A PAGAR\n {totalFinal.ToString("C2")}";
+            GetChange(totalFinal);
+        }
+
+        private void GetChange(decimal total)
+        {
+            if (txtCash == null || lblChange == null || !txtCash.Visible) return;
+
+            string cashText = txtCash.Text.Replace("$", "").Trim();
+
+            if (decimal.TryParse(cashText, out decimal cash))
+            {
+                decimal change = cash - total;
+
+                if (cash >= total)
+                {
+                    lblChange.Text = $"VUELTO\n$ {change.ToString("N2")}";
+                    lblChange.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    lblChange.Text = $"NO ALCANZA";
+                    lblChange.ForeColor = System.Drawing.Color.Black;
+                }
+            }
+            else
+            {
+                lblChange.Text = $"VUELTO\n$ 0.00";
+                lblChange.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+
+        private async void btnSaleTicket_Click(object sender, EventArgs e)
+        {
+            await MakeSale(true);
+        }
+
+        private void PrintLocalTicket(string medioPago, decimal total, decimal pagaCon)
+        {
+            var itemsTicket = _cartItems.Select(x => new TicketItem
+            {
+                ProductName = x.ProductName,
+                Quantity = x.Quantity,
+                Subtotal = x.Subtotal
+            }).ToList();
+
+            var printer = new TicketPrinter();
+            printer.PrintTicket(0, DateTime.Now, itemsTicket, total, medioPago, pagaCon, pagaCon - total);
+        }
+
+        private void btnRePrintLastTicket_Click(object sender, EventArgs e)
+        {
+            if (_lastSaleDto != null)
+            {
+                MessageBox.Show("Reimprimiendo último ticket en memoria...");
+                // Aquí deberías recuperar los nombres de producto de nuevo o guardarlos en _lastSaleDto si quisieras ser estricto,
+                // pero como es una reimpresión rápida de memoria, asumimos que los datos siguen siendo válidos.
+                // (Nota: TicketPrinter necesita nombres, y SaleDetailDto solo tiene códigos. 
+                // Para reimprimir BIEN, deberías guardar la lista de _cartItems antes de limpiarla en una variable _lastCartItems).
+            }
+        }
+
+        private void ConfigGrid()
+        {
+            dgvSaleProducts.AllowUserToAddRows = false;
+            dgvSaleProducts.RowHeadersVisible = false;
+            dgvSaleProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvSaleProducts.ReadOnly = true;
+
+            if (dgvSaleProducts.Columns["ProductCode"] != null)
+            {
+                dgvSaleProducts.Columns["ProductCode"].HeaderText = "Cód.";
+                dgvSaleProducts.Columns["ProductCode"].Width = 80;
+            }
+
+            if (dgvSaleProducts.Columns["ProductName"] != null)
+            {
+                dgvSaleProducts.Columns["ProductName"].HeaderText = "Producto";
+                dgvSaleProducts.Columns["ProductName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+
+            if (dgvSaleProducts.Columns["UnitPrice"] != null)
+            {
+                dgvSaleProducts.Columns["UnitPrice"].HeaderText = "Precio";
+                dgvSaleProducts.Columns["UnitPrice"].DefaultCellStyle.Format = "C2";
+                dgvSaleProducts.Columns["UnitPrice"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvSaleProducts.Columns["UnitPrice"].Width = 100;
+            }
+
+            if (dgvSaleProducts.Columns["Quantity"] != null)
+            {
+                dgvSaleProducts.Columns["Quantity"].HeaderText = "Cant.";
+                dgvSaleProducts.Columns["Quantity"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvSaleProducts.Columns["Quantity"].Width = 60;
+            }
+
+            if (dgvSaleProducts.Columns["Subtotal"] != null)
+            {
+                dgvSaleProducts.Columns["Subtotal"].HeaderText = "Subtotal";
+                dgvSaleProducts.Columns["Subtotal"].DefaultCellStyle.Format = "C2";
+                dgvSaleProducts.Columns["Subtotal"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvSaleProducts.Columns["Subtotal"].Width = 100;
+            }
+
+            dgvSaleProducts.RowHeadersVisible = false;
+            dgvSaleProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvSaleProducts.ReadOnly = true;
+        }
+
+        private void dgvSaleProducts_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete) DeleteSelected();
+        }
+
+        private void DeleteSelected()
+        {
+            if (dgvSaleProducts.CurrentRow?.DataBoundItem is SaleItemViewModel item)
+            {
+                _cartItems.Remove(item);
+                UpdateCalcs();
+                txtProduct.Focus();
+            }
+        }
+
+        private async void btnOnlySale_Click(object sender, EventArgs e)
+        {
+            await MakeSale(false);
+        }
+
+        private void cbxPaymentMethod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckPaymentMethodVisibility();
+            UpdateCalcs();
+        }
+
+        private void CheckPaymentMethodVisibility()
+        {
+            if (cbxPaymentMethod.SelectedItem is PaymentMethodGridDto method)
+            {
+                bool isCash = method.Name.Trim().Equals("Efectivo", StringComparison.OrdinalIgnoreCase);
+
+                if (txtCash != null)
+                {
+                    txtCash.Visible = isCash;
+                    if (!isCash) txtCash.Text = "";
+                }
+
+                if (lblChange != null) lblChange.Visible = isCash;
+            }
+        }
+
+        private async Task MakeSale(bool ticket)
+        {
+            if (_cartItems.Count == 0)
+            {
+                MessageBox.Show("No hay productos leídos.");
+                txtProduct.Focus();
+                return;
+            }
+
+            if (cbxPaymentMethod.SelectedValue == null)
+            {
+                MessageBox.Show("Seleccione un método de pago.");
+                return;
+            }
+
+            btnSaleTicket.Enabled = false;
+            if (btnOnlySale != null) btnOnlySale.Enabled = false;
+
+            try
+            {
+                var paymentMethod = (PaymentMethodGridDto)cbxPaymentMethod.SelectedItem;
+
+                var saleDto = new CreateSaleDto
+                {
+                    PaymentMethodId = paymentMethod.Id,
+                    Items = _cartItems.Select(x => new SaleDetailDto
+                    {
+                        ProductCode = x.ProductCode,
+                        Quantity = x.Quantity,
+                        UnitPrice = x.UnitPrice
+                    }).ToList()
+                };
+
+                int saleId = await _saleService.CreateSaleAsync(saleDto);
+
+                _lastSaleId = saleId;
+                decimal totalImpresion = _currentTotal;
+
+                decimal paysWith = 0;
+                if (txtCash.Visible)
+                    decimal.TryParse(txtCash.Text.Replace("$", "").Trim(), out paysWith);
+
+                // Print
+                if (ticket)
+                {
+                    PrintLocalTicket(paymentMethod.Name, totalImpresion, paysWith);
+                }
+
+                // Reset UI
+                _cartItems.Clear();
+                if (txtCash != null) txtCash.Text = "";
+                if (lblLastProduct != null) lblLastProduct.Text = "";
+                _currentTotal = 0;
+
+                UpdateCalcs();
+
+                string msg = ticket ? "¡Venta registrada e impresa!" : "¡Venta registrada!";
+                MessageBox.Show(msg, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                txtProduct.Focus();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error al Cobrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnSaleTicket.Enabled = true;
+                if (btnOnlySale != null) btnOnlySale.Enabled = true;
+            }
+        }
+
+        private void txtCash_TextChanged(object sender, EventArgs e)
+        {
+            UpdateCalcs();
+        }
+
+        private void btnAddVarious_Click(object sender, EventArgs e)
+        {
+            string txtAmount = txtVariosAmount.Text.Trim();
+            if (string.IsNullOrEmpty(txtAmount)) return;
+
+            if (!decimal.TryParse(txtAmount, out decimal amount) || amount <= 0)
+            {
+                MessageBox.Show("Ingrese un monto válido mayor a 0.");
+                return;
+            }
+
+            // Acumular
+            var itemVarios = _cartItems.FirstOrDefault(x => x.ProductCode == CODIGO_VARIOS);
+
+            if (itemVarios != null)
+            {
+                // Si ya existe, acumula
+                itemVarios.UnitPrice += amount;
+                _cartItems.ResetItem(_cartItems.IndexOf(itemVarios));
+            }
+            else
+            {
+                // Si no existe, se crea.
+                _cartItems.Add(new SaleItemViewModel
+                {
+                    ProductCode = CODIGO_VARIOS,
+                    ProductName = "Varios/Fiambrería",
+                    Quantity = 1,
+                    UnitPrice = amount
+                });
+            }
+
+            UpdateCalcs();
+            txtVariosAmount.Text = "";
+            txtProduct.Focus();
+        }
+
+        private void btnShowLastSale_Click(object sender, EventArgs e)
+        {
+            if (_lastSaleId.HasValue)
+            {
+                var formDetalle = _serviceProvider.GetRequiredService<FormSaleDetail>();
+
+                formDetalle.LoadData(_lastSaleId.Value);
+                formDetalle.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No hay venta reciente en esta sesión de pantalla.");
+            }
+        }
+    }
+}
