@@ -22,7 +22,6 @@
     <Folder Include="SaleDetails\Validations\" />
     <Folder Include="Sales\Validations\" />
     <Folder Include="Sessions\Validations\" />
-    <Folder Include="Users\Dtos\" />
     <Folder Include="Users\Validations\" />
   </ItemGroup>
 

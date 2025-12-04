@@ -109,6 +109,7 @@
             tlpEmployees.SetColumnSpan(txtName, 2);
             txtName.CueHint.CueHintText = "Nombre *";
             txtName.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtName.CueHint.Padding = new Padding(0);
             txtName.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtName.Location = new Point(3, 70);
             txtName.Name = "txtName";
@@ -117,7 +118,7 @@
             txtName.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtName.StateCommon.Border.Width = 2;
             txtName.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtName.TabIndex = 32;
+            txtName.TabIndex = 0;
             txtName.TextAlign = HorizontalAlignment.Center;
             // 
             // txtDni
@@ -126,6 +127,7 @@
             tlpEmployees.SetColumnSpan(txtDni, 2);
             txtDni.CueHint.CueHintText = "DNI *";
             txtDni.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtDni.CueHint.Padding = new Padding(0);
             txtDni.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtDni.Location = new Point(269, 70);
             txtDni.Name = "txtDni";
@@ -134,7 +136,7 @@
             txtDni.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtDni.StateCommon.Border.Width = 2;
             txtDni.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtDni.TabIndex = 34;
+            txtDni.TabIndex = 2;
             txtDni.TextAlign = HorizontalAlignment.Center;
             // 
             // txtEmail
@@ -143,6 +145,7 @@
             tlpEmployees.SetColumnSpan(txtEmail, 2);
             txtEmail.CueHint.CueHintText = "Email";
             txtEmail.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtEmail.CueHint.Padding = new Padding(0);
             txtEmail.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtEmail.Location = new Point(535, 70);
             txtEmail.Name = "txtEmail";
@@ -151,7 +154,7 @@
             txtEmail.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtEmail.StateCommon.Border.Width = 2;
             txtEmail.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtEmail.TabIndex = 36;
+            txtEmail.TabIndex = 4;
             txtEmail.TextAlign = HorizontalAlignment.Center;
             // 
             // txtLastName
@@ -160,6 +163,7 @@
             tlpEmployees.SetColumnSpan(txtLastName, 2);
             txtLastName.CueHint.CueHintText = "Apellido *";
             txtLastName.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtLastName.CueHint.Padding = new Padding(0);
             txtLastName.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtLastName.Location = new Point(3, 126);
             txtLastName.Name = "txtLastName";
@@ -168,7 +172,7 @@
             txtLastName.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtLastName.StateCommon.Border.Width = 2;
             txtLastName.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtLastName.TabIndex = 33;
+            txtLastName.TabIndex = 1;
             txtLastName.TextAlign = HorizontalAlignment.Center;
             // 
             // txtCuit
@@ -177,6 +181,7 @@
             tlpEmployees.SetColumnSpan(txtCuit, 2);
             txtCuit.CueHint.CueHintText = "CUIT";
             txtCuit.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCuit.CueHint.Padding = new Padding(0);
             txtCuit.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtCuit.Location = new Point(269, 126);
             txtCuit.Name = "txtCuit";
@@ -185,7 +190,7 @@
             txtCuit.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtCuit.StateCommon.Border.Width = 2;
             txtCuit.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtCuit.TabIndex = 35;
+            txtCuit.TabIndex = 3;
             txtCuit.TextAlign = HorizontalAlignment.Center;
             // 
             // txtPhone
@@ -194,6 +199,7 @@
             tlpEmployees.SetColumnSpan(txtPhone, 2);
             txtPhone.CueHint.CueHintText = "Telefono";
             txtPhone.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPhone.CueHint.Padding = new Padding(0);
             txtPhone.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtPhone.Location = new Point(535, 126);
             txtPhone.Name = "txtPhone";
@@ -202,7 +208,7 @@
             txtPhone.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtPhone.StateCommon.Border.Width = 2;
             txtPhone.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtPhone.TabIndex = 37;
+            txtPhone.TabIndex = 5;
             txtPhone.TextAlign = HorizontalAlignment.Center;
             // 
             // txtAddress
@@ -211,6 +217,7 @@
             tlpEmployees.SetColumnSpan(txtAddress, 2);
             txtAddress.CueHint.CueHintText = "Dirección";
             txtAddress.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtAddress.CueHint.Padding = new Padding(0);
             txtAddress.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtAddress.Location = new Point(535, 182);
             txtAddress.Name = "txtAddress";
@@ -219,7 +226,7 @@
             txtAddress.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtAddress.StateCommon.Border.Width = 2;
             txtAddress.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtAddress.TabIndex = 38;
+            txtAddress.TabIndex = 6;
             txtAddress.TextAlign = HorizontalAlignment.Center;
             // 
             // btnCancel
@@ -231,7 +238,7 @@
             btnCancel.Size = new Size(127, 40);
             btnCancel.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnCancel.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold | FontStyle.Italic);
-            btnCancel.TabIndex = 30;
+            btnCancel.TabIndex = 14;
             btnCancel.Values.DropDownArrowColor = Color.Empty;
             btnCancel.Values.Text = "Cancelar";
             btnCancel.Click += btnCancel_Click;
@@ -245,7 +252,7 @@
             btnAdd.Size = new Size(127, 40);
             btnAdd.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnAdd.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold | FontStyle.Italic);
-            btnAdd.TabIndex = 29;
+            btnAdd.TabIndex = 13;
             btnAdd.Values.DropDownArrowColor = Color.Empty;
             btnAdd.Values.Text = "Agregar";
             btnAdd.Click += btnAdd_Click;
@@ -256,6 +263,7 @@
             tlpEmployees.SetColumnSpan(txtUsername, 2);
             txtUsername.CueHint.CueHintText = "Usuario";
             txtUsername.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtUsername.CueHint.Padding = new Padding(0);
             txtUsername.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtUsername.Location = new Point(53, 238);
             txtUsername.Name = "txtUsername";
@@ -264,7 +272,7 @@
             txtUsername.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtUsername.StateCommon.Border.Width = 2;
             txtUsername.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtUsername.TabIndex = 40;
+            txtUsername.TabIndex = 8;
             txtUsername.TextAlign = HorizontalAlignment.Center;
             txtUsername.Visible = false;
             // 
@@ -274,6 +282,7 @@
             tlpEmployees.SetColumnSpan(txtPassword, 2);
             txtPassword.CueHint.CueHintText = "Contraseña";
             txtPassword.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPassword.CueHint.Padding = new Padding(0);
             txtPassword.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtPassword.Location = new Point(51, 294);
             txtPassword.Name = "txtPassword";
@@ -282,7 +291,7 @@
             txtPassword.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtPassword.StateCommon.Border.Width = 2;
             txtPassword.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtPassword.TabIndex = 41;
+            txtPassword.TabIndex = 9;
             txtPassword.TextAlign = HorizontalAlignment.Center;
             txtPassword.Visible = false;
             // 
@@ -294,7 +303,7 @@
             cbxAddUser.Name = "cbxAddUser";
             cbxAddUser.Size = new Size(141, 21);
             cbxAddUser.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            cbxAddUser.TabIndex = 42;
+            cbxAddUser.TabIndex = 7;
             cbxAddUser.Values.Text = "Agregar Usuario";
             cbxAddUser.CheckedChanged += cbxAddUser_CheckedChanged;
             // 
@@ -305,15 +314,16 @@
             dtpBirthDay.Location = new Point(688, 241);
             dtpBirthDay.Name = "dtpBirthDay";
             dtpBirthDay.Size = new Size(89, 21);
-            dtpBirthDay.TabIndex = 39;
+            dtpBirthDay.TabIndex = 10;
             // 
             // lblBirthDay
             // 
             lblBirthDay.Anchor = AnchorStyles.Right;
             tlpEmployees.SetColumnSpan(lblBirthDay, 2);
-            lblBirthDay.Location = new Point(499, 241);
+            lblBirthDay.Location = new Point(494, 241);
             lblBirthDay.Name = "lblBirthDay";
-            lblBirthDay.Size = new Size(163, 21);
+            lblBirthDay.Size = new Size(168, 21);
+            lblBirthDay.StateCommon.Padding = new Padding(-1, -1, 8, -1);
             lblBirthDay.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblBirthDay.TabIndex = 43;
             lblBirthDay.Values.Text = "Fecha de Nacimiento";
@@ -322,9 +332,10 @@
             // 
             lblHiredDate.Anchor = AnchorStyles.Right;
             tlpEmployees.SetColumnSpan(lblHiredDate, 2);
-            lblHiredDate.Location = new Point(489, 297);
+            lblHiredDate.Location = new Point(484, 297);
             lblHiredDate.Name = "lblHiredDate";
-            lblHiredDate.Size = new Size(173, 21);
+            lblHiredDate.Size = new Size(178, 21);
+            lblHiredDate.StateCommon.Padding = new Padding(-1, -1, 8, -1);
             lblHiredDate.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblHiredDate.TabIndex = 44;
             lblHiredDate.Values.Text = "Fecha de Contratación";
@@ -338,7 +349,7 @@
             cbxDateHiredToday.Name = "cbxDateHiredToday";
             cbxDateHiredToday.Size = new Size(53, 21);
             cbxDateHiredToday.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            cbxDateHiredToday.TabIndex = 45;
+            cbxDateHiredToday.TabIndex = 11;
             cbxDateHiredToday.Values.Text = "Hoy";
             cbxDateHiredToday.CheckedChanged += cbxDateHiredToday_CheckedChanged;
             // 
@@ -349,13 +360,15 @@
             dtpHiredDate.Location = new Point(560, 353);
             dtpHiredDate.Name = "dtpHiredDate";
             dtpHiredDate.Size = new Size(211, 21);
-            dtpHiredDate.TabIndex = 46;
+            dtpHiredDate.TabIndex = 12;
             dtpHiredDate.Visible = false;
             // 
             // FormEmployeeEditor
             // 
+            AcceptButton = btnAdd;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = btnCancel;
             ClientSize = new Size(800, 450);
             Controls.Add(tlpEmployees);
             FormBorderStyle = FormBorderStyle.None;

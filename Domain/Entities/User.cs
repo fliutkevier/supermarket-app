@@ -11,6 +11,7 @@ namespace Domain.Entities
     {
         [Key]
         public string Username { get; set; }
+        [Required]
         public string Password { get; set; }
         public char Role { get; set; }
         public bool IsActive { get; set; }

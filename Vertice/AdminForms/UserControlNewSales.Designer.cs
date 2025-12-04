@@ -213,6 +213,7 @@
             btnSaleAFIP.TabIndex = 39;
             btnSaleAFIP.Values.DropDownArrowColor = Color.Empty;
             btnSaleAFIP.Values.Text = "FACTURAR";
+            btnSaleAFIP.Click += btnSaleAFIP_Click;
             // 
             // btnShowLastSale
             // 

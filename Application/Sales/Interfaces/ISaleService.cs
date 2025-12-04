@@ -1,4 +1,5 @@
 ﻿using Application.Sales.Dtos;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Application.Sales.Interfaces
 {
     public interface ISaleService
     {
-        Task<int> CreateSaleAsync(CreateSaleDto dto);
+        Task<SaleResultDto> CreateSaleAsync(CreateSaleDto dto);
 
         Task<IEnumerable<SaleGridDto>> GetHistoryAsync(DateOnly? fromDate = null, DateOnly? toDate = null);
 
@@ -18,5 +19,7 @@ namespace Application.Sales.Interfaces
         Task<IEnumerable<SaleGridDto>> GetSalesBySessionAsync(int sessionId);
 
         Task<SaleGridDto?> GetSaleHeaderAsync(int saleId);
+
+        Task<FiscalDocument?> GetFiscalDocumentBySaleIdAsync(int saleId);
     }
 }

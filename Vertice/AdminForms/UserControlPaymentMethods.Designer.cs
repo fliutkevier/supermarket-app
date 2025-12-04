@@ -57,10 +57,10 @@
             tlpPaymentMethods.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 3.359375F));
             tlpPaymentMethods.Controls.Add(lblTitle, 1, 0);
             tlpPaymentMethods.Controls.Add(txtFilter, 1, 1);
-            tlpPaymentMethods.Controls.Add(dgvPaymentMethods, 4, 2);
-            tlpPaymentMethods.Controls.Add(btnUpdate, 6, 1);
-            tlpPaymentMethods.Controls.Add(btnAdd, 4, 1);
-            tlpPaymentMethods.Controls.Add(btnDelete, 5, 1);
+            tlpPaymentMethods.Controls.Add(dgvPaymentMethods, 1, 2);
+            tlpPaymentMethods.Controls.Add(btnAdd, 5, 3);
+            tlpPaymentMethods.Controls.Add(btnDelete, 5, 5);
+            tlpPaymentMethods.Controls.Add(btnUpdate, 5, 7);
             tlpPaymentMethods.Dock = DockStyle.Fill;
             tlpPaymentMethods.Location = new Point(0, 0);
             tlpPaymentMethods.Name = "tlpPaymentMethods";
@@ -128,7 +128,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
             dgvPaymentMethods.DefaultCellStyle = dataGridViewCellStyle3;
             dgvPaymentMethods.EnableHeadersVisualStyles = false;
-            dgvPaymentMethods.Location = new Point(565, 111);
+            dgvPaymentMethods.Location = new Point(14, 111);
             dgvPaymentMethods.MultiSelect = false;
             dgvPaymentMethods.Name = "dgvPaymentMethods";
             dgvPaymentMethods.ReadOnly = true;
@@ -139,13 +139,14 @@
             tlpPaymentMethods.SetRowSpan(dgvPaymentMethods, 9);
             dgvPaymentMethods.RowTemplate.Height = 35;
             dgvPaymentMethods.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPaymentMethods.Size = new Size(667, 519);
+            dgvPaymentMethods.Size = new Size(686, 519);
             dgvPaymentMethods.TabIndex = 9;
             // 
             // btnUpdate
             // 
             btnUpdate.Anchor = AnchorStyles.None;
-            btnUpdate.Location = new Point(851, 61);
+            tlpPaymentMethods.SetColumnSpan(btnUpdate, 2);
+            btnUpdate.Location = new Point(780, 385);
             btnUpdate.Name = "btnUpdate";
             btnUpdate.Size = new Size(127, 40);
             btnUpdate.TabIndex = 30;
@@ -156,7 +157,8 @@
             // btnAdd
             // 
             btnAdd.Anchor = AnchorStyles.None;
-            btnAdd.Location = new Point(569, 61);
+            tlpPaymentMethods.SetColumnSpan(btnAdd, 2);
+            btnAdd.Location = new Point(780, 169);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(127, 40);
             btnAdd.TabIndex = 29;
@@ -167,7 +169,8 @@
             // btnDelete
             // 
             btnDelete.Anchor = AnchorStyles.None;
-            btnDelete.Location = new Point(712, 61);
+            tlpPaymentMethods.SetColumnSpan(btnDelete, 2);
+            btnDelete.Location = new Point(782, 277);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(123, 40);
             btnDelete.TabIndex = 28;

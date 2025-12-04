@@ -26,6 +26,18 @@ namespace Application.Employees
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<IEnumerable<EmployeeLookupDto>> GetEmployeesWithoutUserAsync()
+        {
+            // Filtramos activos y que NO tengan usuario asignado
+            var employees = await _employeeRepository.GetAsync(e => e.IsActive && e.Username == null);
+
+            return employees.Select(e => new EmployeeLookupDto
+            {
+                Dni = e.Dni,
+                DisplayName = $"{e.Name} {e.LastName} ({e.Dni})"
+            });
+        }
+
         public async Task CreateAsync(CreateEmployeeDto dto)
         {
             DtoValidator.Validate(dto);

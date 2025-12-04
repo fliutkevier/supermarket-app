@@ -3,6 +3,8 @@ using Application.PaymentMethods.Interfaces;
 using Application.Products.Interfaces;
 using Application.Sales.Dtos;
 using Application.Sales.Interfaces;
+using Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,7 @@ namespace WinForms
         private readonly IProductService _productService;
         private readonly IPaymentMethodService _paymentMethodService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _config;
 
         private BindingList<SaleItemViewModel> _cartItems;
         private List<PaymentMethodGridDto> _paymentMethods = new List<PaymentMethodGridDto>();
@@ -38,13 +41,15 @@ namespace WinForms
             ISaleService saleService,
             IProductService productService,
             IPaymentMethodService paymentMethodService,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IConfiguration config)
         {
             InitializeComponent();
             _saleService = saleService;
             _productService = productService;
             _paymentMethodService = paymentMethodService;
             _serviceProvider = serviceProvider;
+            _config = config;
 
             _cartItems = new BindingList<SaleItemViewModel>();
         }
@@ -81,6 +86,18 @@ namespace WinForms
             cbxPaymentMethod.DataSource = _paymentMethods;
             cbxPaymentMethod.DisplayMember = "Name";
             cbxPaymentMethod.ValueMember = "Id";
+
+            var efectivo = _paymentMethods.FirstOrDefault(m => m.Name.Trim().Equals("Efectivo", StringComparison.OrdinalIgnoreCase));
+
+            if (efectivo != null)
+            {
+                cbxPaymentMethod.SelectedValue = efectivo.Id;
+            }
+            else if (_paymentMethods.Count > 0)
+            {
+                // Si no hay efectivo, seleccionamos el primero de la lista
+                cbxPaymentMethod.SelectedIndex = 0;
+            }
         }
 
         private async void txtProduct_KeyDown(object sender, KeyEventArgs e)
@@ -134,22 +151,35 @@ namespace WinForms
                     return;
                 }
 
-                // Validar stock base (si ni siquiera hay 1)
-                if (product.Stock <= 0)
-                {
-                    MessageBox.Show($"El producto '{product.Name}' no tiene stock.", "Sin Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
                 //Validación de Stock Acumulado
                 var existingItem = _cartItems.FirstOrDefault(x => x.ProductCode == product.Code);
                 int currentQtyInCart = existingItem?.Quantity ?? 0;
 
                 //Lo que ya tengo en carrito + Lo que quiero agregar
-                if (currentQtyInCart + quantityToAdd > product.Stock)
+                bool faltaStock = false;
+                if (product.Code != CODIGO_VARIOS)
                 {
-                    MessageBox.Show($"Stock insuficiente para '{product.Name}'.\nStock Real: {product.Stock}\nEn Carrito: {currentQtyInCart}\nIntentando agregar: {quantityToAdd}", "Stock Insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    if (currentQtyInCart + quantityToAdd > product.Stock)
+                    {
+                        faltaStock = true;
+                    }
+                }
+
+                // Pregunta de Seguridad
+                if (faltaStock)
+                {
+                    var result = MessageBox.Show(
+                        $"Stock insuficiente para '{product.Name}'.\n" +
+                        $"Stock Real: {product.Stock}\n" +
+                        $"En Carrito: {currentQtyInCart}\n" +
+                        $"Intentando agregar: {quantityToAdd}\n\n" +
+                        "¿Desea venderlo de todas formas? (El stock quedará en 0)",
+                        "Falta de Stock",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button1);
+
+                    if (result == DialogResult.No) return;
                 }
 
                 //Agregar o Actualizar
@@ -244,7 +274,7 @@ namespace WinForms
 
         private async void btnSaleTicket_Click(object sender, EventArgs e)
         {
-            await MakeSale(true);
+            await MakeSale(true, false);
         }
 
         private void PrintLocalTicket(string medioPago, decimal total, decimal pagaCon)
@@ -256,20 +286,9 @@ namespace WinForms
                 Subtotal = x.Subtotal
             }).ToList();
 
+            string nombreImpresora = _config["AfipSdk:PrinterName"] ?? "Microsoft Print to PDF";
             var printer = new TicketPrinter();
-            printer.PrintTicket(0, DateTime.Now, itemsTicket, total, medioPago, pagaCon, pagaCon - total);
-        }
-
-        private void btnRePrintLastTicket_Click(object sender, EventArgs e)
-        {
-            if (_lastSaleDto != null)
-            {
-                MessageBox.Show("Reimprimiendo último ticket en memoria...");
-                // Aquí deberías recuperar los nombres de producto de nuevo o guardarlos en _lastSaleDto si quisieras ser estricto,
-                // pero como es una reimpresión rápida de memoria, asumimos que los datos siguen siendo válidos.
-                // (Nota: TicketPrinter necesita nombres, y SaleDetailDto solo tiene códigos. 
-                // Para reimprimir BIEN, deberías guardar la lista de _cartItems antes de limpiarla en una variable _lastCartItems).
-            }
+            printer.PrintTicket(0, DateTime.Now, itemsTicket, total, medioPago, pagaCon, pagaCon - total, nombreImpresora);
         }
 
         private void ConfigGrid()
@@ -336,7 +355,7 @@ namespace WinForms
 
         private async void btnOnlySale_Click(object sender, EventArgs e)
         {
-            await MakeSale(false);
+            await MakeSale(false, false);
         }
 
         private void cbxPaymentMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -361,7 +380,7 @@ namespace WinForms
             }
         }
 
-        private async Task MakeSale(bool ticket)
+        private async Task MakeSale(bool ticket, bool isFiscal)
         {
             if (_cartItems.Count == 0)
             {
@@ -378,6 +397,8 @@ namespace WinForms
 
             btnSaleTicket.Enabled = false;
             if (btnOnlySale != null) btnOnlySale.Enabled = false;
+            if (btnSale != null) btnSale.Enabled = false;
+            if (btnSaleAFIP != null) btnSaleAFIP.Enabled = false;
 
             try
             {
@@ -391,12 +412,13 @@ namespace WinForms
                         ProductCode = x.ProductCode,
                         Quantity = x.Quantity,
                         UnitPrice = x.UnitPrice
-                    }).ToList()
+                    }).ToList(),
+                    IsFiscal = isFiscal
                 };
 
-                int saleId = await _saleService.CreateSaleAsync(saleDto);
+                SaleResultDto result = await _saleService.CreateSaleAsync(saleDto);
 
-                _lastSaleId = saleId;
+                _lastSaleId = result.SaleId;
                 decimal totalImpresion = _currentTotal;
 
                 decimal paysWith = 0;
@@ -406,7 +428,54 @@ namespace WinForms
                 // Print
                 if (ticket)
                 {
-                    PrintLocalTicket(paymentMethod.Name, totalImpresion, paysWith);
+                    if (isFiscal && result.FiscalData != null)
+                    {
+                        long cuitEmisor = long.Parse(_config["AfipSdk:Cuit"]);
+
+                        var datosQr = new AfipQR
+                        {
+                            fecha = DateTime.Now.ToString("yyyy-MM-dd"),
+                            cuit = cuitEmisor,
+                            ptoVta = result.FiscalData.PointOfSale, //
+                            tipoCmp = result.FiscalData.InvoiceType, //
+                            nroCmp = (int)result.FiscalData.InvoiceNumber, //
+                            importe = _currentTotal, // Importe total de la venta
+                            moneda = "PES",
+                            ctz = 1,
+                            // Si CustomerDocType es nulo (consumidor final sin ident.), usa 99 y doc 0
+                            tipoDocRec = int.Parse(result.FiscalData.CustomerDocType ?? "99"),
+                            nroDocRec = long.Parse(result.FiscalData.CustomerDocNumber ?? "0"),
+                            tipoCodAut = "E",
+                            codAut = long.Parse(result.FiscalData.CAE)
+                        };
+
+                        // Lista de items para el ticket visual
+                        var itemsTicket = _cartItems.Select(x => new TicketItem
+                        {
+                            ProductName = x.ProductName,
+                            Quantity = x.Quantity,
+                            Subtotal = x.Subtotal
+                        }).ToList();
+
+                        var printer = new TicketPrinter();
+
+                        string nombreImpresora = _config["AfipSdk:PrinterName"] ?? "Microsoft Print to PDF";
+                        // Imprimimos pasando los datos QR y la lista visual
+                        printer.ImprimirFactura(
+                            datosQr,
+                            result.FiscalData,
+                            "CONSUMIDOR FINAL",
+                            "0",
+                            itemsTicket,
+                            DateTime.Now, // <--- Agregar este parámetro
+                            nombreImpresora
+                        );
+                    }
+                    else
+                    {
+                        // Ticket no fiscal
+                        PrintLocalTicket(paymentMethod.Name, totalImpresion, paysWith);
+                    }
                 }
 
                 // Reset UI
@@ -420,6 +489,12 @@ namespace WinForms
                 string msg = ticket ? "¡Venta registrada e impresa!" : "¡Venta registrada!";
                 MessageBox.Show(msg, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                if(isFiscal)
+                {
+                    MessageBox.Show("¡Venta Fiscal Autorizada!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
+
                 txtProduct.Focus();
             }
             catch (Exception ex)
@@ -430,6 +505,7 @@ namespace WinForms
             {
                 btnSaleTicket.Enabled = true;
                 if (btnOnlySale != null) btnOnlySale.Enabled = true;
+                if (btnSaleAFIP != null) btnSaleAFIP.Enabled = true;
             }
         }
 
@@ -488,6 +564,11 @@ namespace WinForms
             {
                 MessageBox.Show("No hay venta reciente en esta sesión de pantalla.");
             }
+        }
+
+        private async void btnSaleAFIP_Click(object sender, EventArgs e)
+        {
+            await MakeSale(true, true);
         }
     }
 }

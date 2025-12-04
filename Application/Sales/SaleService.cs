@@ -19,8 +19,8 @@ namespace Application.Sales
         private readonly IUserSessionService _userSessionService;
         private readonly IPaymentMethodRepository _paymentMethodRepository;
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IFiscalService _fiscalService;
-        //private readonly IRepository<FiscalDocument> _fiscalDocRepository;
+        private readonly IFiscalService _fiscalService;
+        private readonly IRepository<FiscalDocument> _fiscalDocRepository; // Repositorio genérico para guardar el CAE
 
         public SaleService(
             ISaleRepository saleRepository,
@@ -29,9 +29,9 @@ namespace Application.Sales
             ISessionRepository sessionRepository,
             IUserSessionService userSessionService,
             IPaymentMethodRepository paymentMethodRepository,
-            IUnitOfWork unitOfWork)
-            //IFiscalService fiscalService,
-            //IRepository<FiscalDocument> fiscalDocRepository)
+            IUnitOfWork unitOfWork,
+            IFiscalService fiscalService,
+            IRepository<FiscalDocument> fiscalDocRepository)
         {
             _saleRepository = saleRepository;
             _saleDetailRepository = saleDetailRepository;
@@ -40,11 +40,11 @@ namespace Application.Sales
             _userSessionService = userSessionService;
             _paymentMethodRepository = paymentMethodRepository;
             _unitOfWork = unitOfWork;
-            //_fiscalService = fiscalService;
-            //_fiscalDocRepository = fiscalDocRepository;
+            _fiscalService = fiscalService;
+            _fiscalDocRepository = fiscalDocRepository;
         }
 
-        public async Task<int> CreateSaleAsync(CreateSaleDto dto)
+        public async Task<SaleResultDto> CreateSaleAsync(CreateSaleDto dto)
         {
             DtoValidator.Validate(dto);
 
@@ -85,10 +85,12 @@ namespace Application.Sales
                 // Descuento si NO es precio abierto
                 if (!product.IsOpenPrice)
                 {
-                    if (product.Stock < itemDto.Quantity)
-                        throw new InvalidOperationException($"Stock insuficiente para '{product.Name}'.");
+                    int nuevoStock = product.Stock - itemDto.Quantity;
 
-                    product.Stock -= itemDto.Quantity;
+                    // Si el nuevo stock es negativo, lo dejamos en 0 (pero vendemos igual)
+                    if (nuevoStock < 0) nuevoStock = 0;
+
+                    product.Stock = nuevoStock;
                     product.LastStockUpdate = DateTime.Now;
                     _productRepository.Update(product);
                 }
@@ -117,7 +119,54 @@ namespace Application.Sales
             await _saleRepository.AddAsync(newSale);
             await _unitOfWork.SaveChangesAsync();
 
-            return newSale.Id;
+            FiscalDocument? fiscalDoc = null;
+
+            //LÓGICA FISCAL
+            if (dto.IsFiscal)
+            {
+                try
+                {
+                    // Llamada a AFIP
+                    fiscalDoc = await _fiscalService.GenerateInvoiceAsync(newSale);
+
+                    // --- VALIDACIÓN DE NULIDAD ---
+                    if (fiscalDoc == null)
+                    {
+                        throw new Exception("El servicio de AFIP no devolvió ningún documento (retornó null).");
+                    }
+                    // -----------------------------
+
+                    // Vincular con la venta local
+                    fiscalDoc.SaleId = newSale.Id;
+
+                    // Guardar el CAE
+                    await _fiscalDocRepository.AddAsync(fiscalDoc);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    // (Opcional) Capturar datos para devolver en el DTO si querés mostrarlos
+                    // cae = fiscalDoc.CAE; 
+                }
+                catch (Exception ex)
+                {
+                    // IMPORTANTE: La venta local YA SE HIZO. 
+                    // Avisamos al usuario que falló la parte fiscal.
+                    throw new Exception($"Venta #{newSale.Id} registrada, pero falló AFIP: {ex.Message}");
+                }
+            }
+
+            return new SaleResultDto
+            {
+                SaleId = newSale.Id, // El ID que ya tenías
+                FiscalData = fiscalDoc // El objeto con CAE, Nro, etc. (o null)
+            };
+        }
+
+        public async Task<FiscalDocument?> GetFiscalDocumentBySaleIdAsync(int saleId)
+        {
+            // Asumiendo que tu repositorio genérico tiene un método para filtrar
+            // Si usas EF Core directo o un repositorio genérico estándar:
+            var docs = await _fiscalDocRepository.GetAsync(x => x.SaleId == saleId);
+            return docs.FirstOrDefault();
         }
 
         public async Task<IEnumerable<SaleGridDto>> GetHistoryAsync(DateOnly? fromDate = null, DateOnly? toDate = null)

@@ -15,5 +15,7 @@ namespace Application.Sales.Dtos
         [Required]
         [MinLength(1, ErrorMessage = "La venta debe tener al menos un producto")]
         public List<SaleDetailDto> Items { get; set; } = new List<SaleDetailDto>();
+
+        public bool IsFiscal { get; set; } // True = Facturar en AFIP
     }
 }

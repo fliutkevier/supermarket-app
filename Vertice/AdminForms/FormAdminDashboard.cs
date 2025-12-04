@@ -31,6 +31,59 @@ namespace WinForms.AdminForms
             _serviceProvider = serviceProvider;
             _userSessionService = userSessionService;
             _sessionService = sessionService;
+
+            this.KeyPreview = true; //El form captura teclas antes que los controles
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            // Si ya se manejó la tecla, salimos
+            if (e.Handled) return;
+
+            switch (e.KeyCode)
+            {
+                case Keys.F1:
+                    e.Handled = true;
+                    // Simulamos clic en el botón (o llamamos a la lógica directa)
+                    if (btnSellNavbar != null && btnSellNavbar.Enabled)
+                        btnSellNavbar.PerformClick();
+                    break;
+
+                case Keys.F2: // Productos
+                    e.Handled = true;
+                    if (btnProductsNavbar != null && btnProductsNavbar.Enabled)
+                        btnProductsNavbar.PerformClick();
+                    break;
+
+                case Keys.F3: // Historial Ventas
+                    e.Handled = true;
+                    if (btnHistoryNavbar != null && btnHistoryNavbar.Enabled)
+                        btnHistoryNavbar.PerformClick();
+                    break;
+
+                case Keys.F4: // Caja
+                    e.Handled = true;
+                    if (btnInitSession != null && btnInitSession.Enabled)
+                        btnInitSession.PerformClick();
+                    break;
+
+                case Keys.F10: // Cerrar Sesión
+                    e.Handled = true;
+                    if (btnLogOutNavbar != null && btnLogOutNavbar.Enabled)
+                        btnLogOutNavbar.PerformClick();
+                    break;
+
+                case Keys.Escape: // Volver al Home (Si no estamos en Home)
+                    // Solo si el menú está oculto (significa que hay un control abierto)
+                    if (!pnlMenu.Visible)
+                    {
+                        e.Handled = true;
+                        btnHome_Click_1(this, EventArgs.Empty);
+                    }
+                    break;
+            }
         }
 
         private void OpenControl(Control childControl)
@@ -52,12 +105,30 @@ namespace WinForms.AdminForms
 
         private void ShowNavbar()
         {
-            pnlNavbar.Visible = true;
+            btnHome.Visible = true;
+            btnHome.Enabled = true;
+            btnSellNavbar.Visible = true;
+            btnProductsNavbar.Visible = true;
+            btnHistoryNavbar.Visible = true;
+            btnLogOutNavbar.Visible = true;
+            btnSellNavbar.Enabled = true;
+            btnProductsNavbar.Enabled = true;
+            btnHistoryNavbar.Enabled = true;
+            btnLogOutNavbar.Enabled = true;
         }
 
         private void HideNavbar()
         {
-            pnlNavbar.Visible = false;
+            btnHome.Visible = false;
+            btnSellNavbar.Visible = false;
+            btnProductsNavbar.Visible = false;
+            btnHistoryNavbar.Visible = false;
+            btnLogOutNavbar.Visible = false;
+            btnHome.Enabled = false;
+            btnSellNavbar.Enabled = false;
+            btnProductsNavbar.Enabled = false;
+            btnHistoryNavbar.Enabled = false;
+            btnLogOutNavbar.Enabled = false;
         }
 
         private async void FormAdminDashboard_Load(object sender, EventArgs e)
@@ -118,7 +189,7 @@ namespace WinForms.AdminForms
                 if (isOpen)
                 {
                     btnInitSession.Text = "CERRAR CAJA [F4]";
-                    btnInitSession.BackColor = Color.Salmon; 
+                    btnInitSession.BackColor = Color.Salmon;
                 }
                 else
                 {
@@ -126,7 +197,7 @@ namespace WinForms.AdminForms
                     btnInitSession.BackColor = Color.LightGreen;
                 }
             }
-            catch {  }
+            catch { }
         }
 
         private void clockTimer_Tick(object sender, EventArgs e)
@@ -237,6 +308,26 @@ namespace WinForms.AdminForms
             {
                 MessageBox.Show("Error al cambiar estado de caja: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnUsersMenu_Click(object sender, EventArgs e)
+        {
+            OpenControl(_serviceProvider.GetRequiredService<UserControlUsers>());
+        }
+
+        private void btnSellNavbar_Click(object sender, EventArgs e)
+        {
+            btnInitSellMenu_Click_1(sender, e);
+        }
+
+        private void btnProductsNavbar_Click(object sender, EventArgs e)
+        {
+            btnProductsMenu_Click_1(sender, e);
+        }
+
+        private void btnHistoryNavbar_Click(object sender, EventArgs e)
+        {
+            btnSalesHistory_Click_1(sender, e);
         }
     }
 }

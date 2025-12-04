@@ -33,9 +33,6 @@
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             tlpEmployees = new TableLayoutPanel();
-            cbxActives = new Krypton.Toolkit.KryptonCheckBox();
-            rbtDesDate = new Krypton.Toolkit.KryptonRadioButton();
-            rbtDesName = new Krypton.Toolkit.KryptonRadioButton();
             btnResetFilters = new Krypton.Toolkit.KryptonButton();
             btnDelete = new Krypton.Toolkit.KryptonButton();
             btnUpdate = new Krypton.Toolkit.KryptonButton();
@@ -43,8 +40,14 @@
             txtFilter = new Krypton.Toolkit.KryptonTextBox();
             lblTitle = new Krypton.Toolkit.KryptonLabel();
             dgvEmployees = new DataGridView();
+            gbxFilters = new GroupBox();
+            tlpFilters = new TableLayoutPanel();
+            rbtDesDate = new Krypton.Toolkit.KryptonRadioButton();
+            rbtDesName = new Krypton.Toolkit.KryptonRadioButton();
             tlpEmployees.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEmployees).BeginInit();
+            gbxFilters.SuspendLayout();
+            tlpFilters.SuspendLayout();
             SuspendLayout();
             // 
             // tlpEmployees
@@ -55,11 +58,8 @@
             tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857141F));
             tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857141F));
             tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857141F));
-            tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857141F));
-            tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857141F));
-            tlpEmployees.Controls.Add(cbxActives, 6, 5);
-            tlpEmployees.Controls.Add(rbtDesDate, 6, 4);
-            tlpEmployees.Controls.Add(rbtDesName, 6, 3);
+            tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 12.421875F));
+            tlpEmployees.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.71875F));
             tlpEmployees.Controls.Add(btnResetFilters, 6, 2);
             tlpEmployees.Controls.Add(btnDelete, 5, 1);
             tlpEmployees.Controls.Add(btnUpdate, 4, 1);
@@ -67,6 +67,7 @@
             tlpEmployees.Controls.Add(txtFilter, 1, 1);
             tlpEmployees.Controls.Add(lblTitle, 1, 0);
             tlpEmployees.Controls.Add(dgvEmployees, 1, 2);
+            tlpEmployees.Controls.Add(gbxFilters, 6, 3);
             tlpEmployees.Dock = DockStyle.Fill;
             tlpEmployees.Location = new Point(0, 0);
             tlpEmployees.Name = "tlpEmployees";
@@ -74,56 +75,28 @@
             tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 6.259542F));
             tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 7.93893147F));
             tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 28.0916023F));
-            tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 14.2857141F));
-            tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 14.2857141F));
-            tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 26.87023F));
+            tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 29.7709923F));
+            tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 6.87022924F));
+            tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 18.6259537F));
             tlpEmployees.RowStyles.Add(new RowStyle(SizeType.Percent, 2.13740468F));
             tlpEmployees.Size = new Size(1280, 655);
             tlpEmployees.TabIndex = 2;
             // 
-            // cbxActives
-            // 
-            cbxActives.Anchor = AnchorStyles.None;
-            cbxActives.Checked = true;
-            cbxActives.CheckState = CheckState.Checked;
-            cbxActives.Location = new Point(1121, 541);
-            cbxActives.Name = "cbxActives";
-            cbxActives.Size = new Size(133, 20);
-            cbxActives.TabIndex = 16;
-            cbxActives.Values.Text = "Mostrar solo activos";
-            // 
-            // rbtDesDate
-            // 
-            rbtDesDate.Anchor = AnchorStyles.None;
-            rbtDesDate.Location = new Point(1126, 406);
-            rbtDesDate.Name = "rbtDesDate";
-            rbtDesDate.Size = new Size(124, 20);
-            rbtDesDate.TabIndex = 14;
-            rbtDesDate.Values.Text = "Ordenar por Fecha";
-            // 
-            // rbtDesName
-            // 
-            rbtDesName.Anchor = AnchorStyles.None;
-            rbtDesName.Location = new Point(1119, 313);
-            rbtDesName.Name = "rbtDesName";
-            rbtDesName.Size = new Size(138, 20);
-            rbtDesName.TabIndex = 15;
-            rbtDesName.Values.Text = "Ordenar por Nombre";
-            // 
             // btnResetFilters
             // 
             btnResetFilters.Anchor = AnchorStyles.Bottom;
-            btnResetFilters.Location = new Point(1124, 234);
+            btnResetFilters.Location = new Point(1109, 234);
             btnResetFilters.Name = "btnResetFilters";
             btnResetFilters.Size = new Size(127, 40);
             btnResetFilters.TabIndex = 17;
             btnResetFilters.Values.DropDownArrowColor = Color.Empty;
             btnResetFilters.Values.Text = "Reiniciar Filtros";
+            btnResetFilters.Click += btnResetFilters_Click;
             // 
             // btnDelete
             // 
             btnDelete.Anchor = AnchorStyles.None;
-            btnDelete.Location = new Point(941, 47);
+            btnDelete.Location = new Point(922, 47);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(127, 40);
             btnDelete.TabIndex = 12;
@@ -134,7 +107,7 @@
             // btnUpdate
             // 
             btnUpdate.Anchor = AnchorStyles.None;
-            btnUpdate.Location = new Point(758, 47);
+            btnUpdate.Location = new Point(752, 47);
             btnUpdate.Name = "btnUpdate";
             btnUpdate.Size = new Size(127, 40);
             btnUpdate.TabIndex = 11;
@@ -145,7 +118,7 @@
             // btnAdd
             // 
             btnAdd.Anchor = AnchorStyles.None;
-            btnAdd.Location = new Point(575, 47);
+            btnAdd.Location = new Point(570, 47);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(127, 40);
             btnAdd.TabIndex = 10;
@@ -158,17 +131,18 @@
             txtFilter.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtFilter, 2);
             txtFilter.CueHint.CueHintText = "Buscar";
-            txtFilter.Location = new Point(111, 55);
+            txtFilter.Location = new Point(108, 55);
             txtFilter.Name = "txtFilter";
             txtFilter.Size = new Size(343, 23);
             txtFilter.TabIndex = 9;
+            txtFilter.TextChanged += txtFilter_TextChanged;
             // 
             // lblTitle
             // 
             lblTitle.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(lblTitle, 2);
             lblTitle.LabelStyle = Krypton.Toolkit.LabelStyle.TitlePanel;
-            lblTitle.Location = new Point(229, 6);
+            lblTitle.Location = new Point(226, 6);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(107, 29);
             lblTitle.TabIndex = 7;
@@ -201,7 +175,7 @@
             dgvEmployees.DefaultCellStyle = dataGridViewCellStyle3;
             dgvEmployees.Dock = DockStyle.Fill;
             dgvEmployees.EnableHeadersVisualStyles = false;
-            dgvEmployees.Location = new Point(21, 96);
+            dgvEmployees.Location = new Point(20, 96);
             dgvEmployees.MultiSelect = false;
             dgvEmployees.Name = "dgvEmployees";
             dgvEmployees.ReadOnly = true;
@@ -212,8 +186,54 @@
             tlpEmployees.SetRowSpan(dgvEmployees, 4);
             dgvEmployees.RowTemplate.Height = 35;
             dgvEmployees.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEmployees.Size = new Size(1072, 540);
+            dgvEmployees.Size = new Size(1042, 540);
             dgvEmployees.TabIndex = 18;
+            // 
+            // gbxFilters
+            // 
+            gbxFilters.Controls.Add(tlpFilters);
+            gbxFilters.Dock = DockStyle.Fill;
+            gbxFilters.Location = new Point(1068, 280);
+            gbxFilters.Name = "gbxFilters";
+            gbxFilters.Size = new Size(209, 189);
+            gbxFilters.TabIndex = 30;
+            gbxFilters.TabStop = false;
+            // 
+            // tlpFilters
+            // 
+            tlpFilters.ColumnCount = 1;
+            tlpFilters.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpFilters.Controls.Add(rbtDesDate, 0, 0);
+            tlpFilters.Controls.Add(rbtDesName, 0, 1);
+            tlpFilters.Dock = DockStyle.Fill;
+            tlpFilters.Location = new Point(3, 19);
+            tlpFilters.Name = "tlpFilters";
+            tlpFilters.RowCount = 2;
+            tlpFilters.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlpFilters.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlpFilters.Size = new Size(203, 167);
+            tlpFilters.TabIndex = 15;
+            // 
+            // rbtDesDate
+            // 
+            rbtDesDate.Anchor = AnchorStyles.None;
+            rbtDesDate.Checked = true;
+            rbtDesDate.Location = new Point(39, 31);
+            rbtDesDate.Name = "rbtDesDate";
+            rbtDesDate.Size = new Size(124, 20);
+            rbtDesDate.TabIndex = 11;
+            rbtDesDate.Values.Text = "Ordenar por Fecha";
+            rbtDesDate.CheckedChanged += rbtDesDate_CheckedChanged;
+            // 
+            // rbtDesName
+            // 
+            rbtDesName.Anchor = AnchorStyles.None;
+            rbtDesName.Location = new Point(32, 115);
+            rbtDesName.Name = "rbtDesName";
+            rbtDesName.Size = new Size(138, 20);
+            rbtDesName.TabIndex = 12;
+            rbtDesName.Values.Text = "Ordenar por Nombre";
+            rbtDesName.CheckedChanged += rbtDesName_CheckedChanged;
             // 
             // UserControlEmployees
             // 
@@ -226,6 +246,9 @@
             tlpEmployees.ResumeLayout(false);
             tlpEmployees.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEmployees).EndInit();
+            gbxFilters.ResumeLayout(false);
+            tlpFilters.ResumeLayout(false);
+            tlpFilters.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -237,10 +260,11 @@
         private Krypton.Toolkit.KryptonButton btnAdd;
         private Krypton.Toolkit.KryptonButton btnUpdate;
         private Krypton.Toolkit.KryptonButton btnDelete;
-        private Krypton.Toolkit.KryptonCheckBox cbxActives;
-        private Krypton.Toolkit.KryptonRadioButton rbtDesDate;
-        private Krypton.Toolkit.KryptonRadioButton rbtDesName;
         private Krypton.Toolkit.KryptonButton btnResetFilters;
         private DataGridView dgvEmployees;
+        private GroupBox gbxFilters;
+        private TableLayoutPanel tlpFilters;
+        private Krypton.Toolkit.KryptonRadioButton rbtDesDate;
+        private Krypton.Toolkit.KryptonRadioButton rbtDesName;
     }
 }

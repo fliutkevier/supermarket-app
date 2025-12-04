@@ -1,4 +1,5 @@
-﻿using Application.Employees.Interfaces;
+﻿using Application.Employees.Dtos;
+using Application.Employees.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace WinForms
     {
         private readonly IEmployeeService _service;
         private readonly IServiceProvider _serviceProvider;
+
+        private List<EmployeeGridDto> _employeesLoaded = new List<EmployeeGridDto>();
 
         public UserControlEmployees(IEmployeeService service, IServiceProvider serviceProvider)
         {
@@ -96,13 +99,44 @@ namespace WinForms
             try
             {
                 var lista = await _service.GetAllForGridAsync();
-                dgvEmployees.DataSource = lista.ToList();
+                _employeesLoaded = lista.ToList();
+                ApplyFilters();
                 ConfigGrid();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar empleados: " + ex.Message);
             }
+        }
+
+        private void ApplyFilters()
+        {
+            if (_employeesLoaded == null) return;
+
+            var listaFiltrada = _employeesLoaded.AsEnumerable();
+
+            string busqueda = txtFilter.Text.Trim().ToLower();
+            if (!string.IsNullOrEmpty(busqueda))
+            {
+                listaFiltrada = listaFiltrada.Where(e =>
+                    e.FullName.ToLower().Contains(busqueda) ||
+                    e.Dni.Contains(busqueda) ||
+                    e.Cuit.Contains(busqueda));
+            }
+
+            // if (cbxActives.Checked) listaFiltrada = listaFiltrada.Where(e => e.IsActive);
+
+            // Ordenamiento
+            if (rbtDesDate != null && rbtDesDate.Checked)
+            {
+                listaFiltrada = listaFiltrada.OrderByDescending(e => e.DateHired);
+            }
+            else if (rbtDesName != null && rbtDesName.Checked)
+            {
+                listaFiltrada = listaFiltrada.OrderBy(e => e.FullName);
+            }
+
+            dgvEmployees.DataSource = listaFiltrada.ToList();
         }
 
         private void ConfigGrid()
@@ -132,6 +166,30 @@ namespace WinForms
 
             if (dgvEmployees.Columns["LinkedUser"] != null)
                 dgvEmployees.Columns["LinkedUser"].HeaderText = "Usuario";
+        }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilters();
+        }
+
+        private void rbtDesDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbtDesDate.Checked) ApplyFilters();
+        }
+
+        private void rbtDesName_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbtDesName.Checked) ApplyFilters();
+        }
+
+        private void btnResetFilters_Click(object sender, EventArgs e)
+        {
+            txtFilter.Text = "";
+            if (rbtDesDate != null) rbtDesDate.Checked = true;
+
+            // Recargamos de la BD para refrescar datos frescos
+            LoadGrid();
         }
     }
 }

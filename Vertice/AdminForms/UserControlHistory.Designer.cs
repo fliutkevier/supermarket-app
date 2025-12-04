@@ -37,27 +37,28 @@
             DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             tlpHistory = new TableLayoutPanel();
-            txtFilter = new Krypton.Toolkit.KryptonTextBox();
             lblTitle = new Krypton.Toolkit.KryptonLabel();
             dgvSessions = new DataGridView();
             dgvSales = new DataGridView();
             lblSellsTitle = new Krypton.Toolkit.KryptonLabel();
             btnShowDetails = new Krypton.Toolkit.KryptonButton();
-            cbxUserFilter = new Krypton.Toolkit.KryptonThemeComboBox();
             lblSince = new Krypton.Toolkit.KryptonLabel();
             dtpSince = new Krypton.Toolkit.KryptonDateTimePicker();
             lblTo = new Krypton.Toolkit.KryptonLabel();
             dtpTo = new Krypton.Toolkit.KryptonDateTimePicker();
             btnSearch = new Krypton.Toolkit.KryptonButton();
             btnResetFilters = new Krypton.Toolkit.KryptonButton();
+            cbxUsersFilter = new Krypton.Toolkit.KryptonComboBox();
             gbxFilters = new GroupBox();
             tlpFilters = new TableLayoutPanel();
+            rbtMaxMoney = new Krypton.Toolkit.KryptonRadioButton();
             rbtDesDate = new Krypton.Toolkit.KryptonRadioButton();
             rbtDesName = new Krypton.Toolkit.KryptonRadioButton();
+            rbtMinMoney = new Krypton.Toolkit.KryptonRadioButton();
             tlpHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSessions).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvSales).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cbxUserFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cbxUsersFilter).BeginInit();
             gbxFilters.SuspendLayout();
             tlpFilters.SuspendLayout();
             SuspendLayout();
@@ -73,19 +74,18 @@
             tlpHistory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18.515625F));
             tlpHistory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10.390625F));
             tlpHistory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1.09375F));
-            tlpHistory.Controls.Add(txtFilter, 1, 1);
             tlpHistory.Controls.Add(lblTitle, 1, 0);
             tlpHistory.Controls.Add(dgvSessions, 1, 2);
             tlpHistory.Controls.Add(dgvSales, 4, 2);
             tlpHistory.Controls.Add(lblSellsTitle, 5, 1);
             tlpHistory.Controls.Add(btnShowDetails, 6, 1);
-            tlpHistory.Controls.Add(cbxUserFilter, 3, 3);
             tlpHistory.Controls.Add(lblSince, 3, 5);
             tlpHistory.Controls.Add(dtpSince, 3, 6);
             tlpHistory.Controls.Add(lblTo, 3, 7);
             tlpHistory.Controls.Add(dtpTo, 3, 8);
             tlpHistory.Controls.Add(btnSearch, 3, 9);
             tlpHistory.Controls.Add(btnResetFilters, 3, 10);
+            tlpHistory.Controls.Add(cbxUsersFilter, 3, 3);
             tlpHistory.Controls.Add(gbxFilters, 3, 4);
             tlpHistory.Dock = DockStyle.Fill;
             tlpHistory.Location = new Point(0, 0);
@@ -107,16 +107,6 @@
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 3.34858537F));
             tlpHistory.Size = new Size(1280, 655);
             tlpHistory.TabIndex = 0;
-            // 
-            // txtFilter
-            // 
-            txtFilter.Anchor = AnchorStyles.None;
-            tlpHistory.SetColumnSpan(txtFilter, 2);
-            txtFilter.CueHint.CueHintText = "Buscar";
-            txtFilter.Location = new Point(121, 57);
-            txtFilter.Name = "txtFilter";
-            txtFilter.Size = new Size(343, 23);
-            txtFilter.TabIndex = 8;
             // 
             // lblTitle
             // 
@@ -233,18 +223,6 @@
             btnShowDetails.Values.Text = "Ver Detalle";
             btnShowDetails.Click += btnShowDetails_Click;
             // 
-            // cbxUserFilter
-            // 
-            cbxUserFilter.Anchor = AnchorStyles.None;
-            cbxUserFilter.CueHint.CueHintText = "Buscar por Usuario";
-            cbxUserFilter.DefaultPalette = Krypton.Toolkit.PaletteMode.Microsoft365Blue;
-            cbxUserFilter.DropDownWidth = 162;
-            cbxUserFilter.Location = new Point(591, 150);
-            cbxUserFilter.Name = "cbxUserFilter";
-            cbxUserFilter.Size = new Size(152, 22);
-            cbxUserFilter.StateCommon.ComboBox.Content.TextH = Krypton.Toolkit.PaletteRelativeAlign.Near;
-            cbxUserFilter.TabIndex = 13;
-            // 
             // lblSince
             // 
             lblSince.Anchor = AnchorStyles.Bottom;
@@ -303,6 +281,17 @@
             btnResetFilters.Values.Text = "Reiniciar Filtros";
             btnResetFilters.Click += btnResetFilters_Click;
             // 
+            // cbxUsersFilter
+            // 
+            cbxUsersFilter.Anchor = AnchorStyles.None;
+            cbxUsersFilter.DropDownWidth = 152;
+            cbxUsersFilter.Location = new Point(585, 150);
+            cbxUsersFilter.Name = "cbxUsersFilter";
+            cbxUsersFilter.Size = new Size(164, 22);
+            cbxUsersFilter.StateCommon.ComboBox.Content.TextH = Krypton.Toolkit.PaletteRelativeAlign.Near;
+            cbxUsersFilter.TabIndex = 24;
+            cbxUsersFilter.Text = "USUARIOS";
+            // 
             // gbxFilters
             // 
             gbxFilters.Controls.Add(tlpFilters);
@@ -310,19 +299,21 @@
             gbxFilters.Location = new Point(578, 187);
             gbxFilters.Name = "gbxFilters";
             gbxFilters.Size = new Size(178, 137);
-            gbxFilters.TabIndex = 23;
+            gbxFilters.TabIndex = 29;
             gbxFilters.TabStop = false;
             // 
             // tlpFilters
             // 
             tlpFilters.ColumnCount = 1;
             tlpFilters.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpFilters.Controls.Add(rbtMaxMoney, 0, 3);
             tlpFilters.Controls.Add(rbtDesDate, 0, 0);
             tlpFilters.Controls.Add(rbtDesName, 0, 1);
+            tlpFilters.Controls.Add(rbtMinMoney, 0, 2);
             tlpFilters.Dock = DockStyle.Fill;
             tlpFilters.Location = new Point(3, 19);
             tlpFilters.Name = "tlpFilters";
-            tlpFilters.RowCount = 2;
+            tlpFilters.RowCount = 4;
             tlpFilters.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tlpFilters.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tlpFilters.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
@@ -330,11 +321,20 @@
             tlpFilters.Size = new Size(172, 115);
             tlpFilters.TabIndex = 15;
             // 
+            // rbtMaxMoney
+            // 
+            rbtMaxMoney.Anchor = AnchorStyles.None;
+            rbtMaxMoney.Location = new Point(3, 89);
+            rbtMaxMoney.Name = "rbtMaxMoney";
+            rbtMaxMoney.Size = new Size(166, 20);
+            rbtMaxMoney.TabIndex = 14;
+            rbtMaxMoney.Values.Text = "Ordenar por Mayor Recaudación";
+            // 
             // rbtDesDate
             // 
             rbtDesDate.Anchor = AnchorStyles.None;
             rbtDesDate.Checked = true;
-            rbtDesDate.Location = new Point(24, 18);
+            rbtDesDate.Location = new Point(24, 4);
             rbtDesDate.Name = "rbtDesDate";
             rbtDesDate.Size = new Size(124, 20);
             rbtDesDate.TabIndex = 11;
@@ -343,11 +343,20 @@
             // rbtDesName
             // 
             rbtDesName.Anchor = AnchorStyles.None;
-            rbtDesName.Location = new Point(17, 76);
+            rbtDesName.Location = new Point(17, 32);
             rbtDesName.Name = "rbtDesName";
             rbtDesName.Size = new Size(138, 20);
             rbtDesName.TabIndex = 12;
             rbtDesName.Values.Text = "Ordenar por Nombre";
+            // 
+            // rbtMinMoney
+            // 
+            rbtMinMoney.Anchor = AnchorStyles.None;
+            rbtMinMoney.Location = new Point(3, 60);
+            rbtMinMoney.Name = "rbtMinMoney";
+            rbtMinMoney.Size = new Size(166, 20);
+            rbtMinMoney.TabIndex = 13;
+            rbtMinMoney.Values.Text = "Ordenar por Menor Recaudación";
             // 
             // UserControlHistory
             // 
@@ -361,7 +370,7 @@
             tlpHistory.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSessions).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvSales).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cbxUserFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cbxUsersFilter).EndInit();
             gbxFilters.ResumeLayout(false);
             tlpFilters.ResumeLayout(false);
             tlpFilters.PerformLayout();
@@ -372,9 +381,7 @@
 
         private TableLayoutPanel tlpHistory;
         private Krypton.Toolkit.KryptonLabel lblTitle;
-        private Krypton.Toolkit.KryptonTextBox txtFilter;
         private Krypton.Toolkit.KryptonButton btnResetFilters;
-        private Krypton.Toolkit.KryptonThemeComboBox cbxUserFilter;
         private Krypton.Toolkit.KryptonLabel lblSince;
         private Krypton.Toolkit.KryptonDateTimePicker dtpSince;
         private Krypton.Toolkit.KryptonLabel lblTo;
@@ -384,9 +391,12 @@
         private Krypton.Toolkit.KryptonLabel lblSellsTitle;
         private Krypton.Toolkit.KryptonButton btnSearch;
         private Krypton.Toolkit.KryptonButton btnShowDetails;
+        private Krypton.Toolkit.KryptonComboBox cbxUsersFilter;
         private GroupBox gbxFilters;
         private TableLayoutPanel tlpFilters;
+        private Krypton.Toolkit.KryptonRadioButton rbtMaxMoney;
         private Krypton.Toolkit.KryptonRadioButton rbtDesDate;
         private Krypton.Toolkit.KryptonRadioButton rbtDesName;
+        private Krypton.Toolkit.KryptonRadioButton rbtMinMoney;
     }
 }

@@ -15,7 +15,7 @@ namespace Domain.Entities
         public int Id { get; set; }
         public decimal Total { get; set; }
         //al finalizar la session, se resta el datetime.now con el de openedAt
-        public TimeSpan? TotalDuration { get; set; }
+        public double? TotalDuration { get; set; }
         public DateOnly Date { get; set; }
         public DateTime OpenedAt { get; set; }
         public DateTime? ClosedAt { get; set; }

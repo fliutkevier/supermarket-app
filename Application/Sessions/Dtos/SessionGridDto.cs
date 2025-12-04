@@ -13,7 +13,7 @@ namespace Application.Sessions.Dtos
         public DateOnly Date { get; set; }
         public DateTime OpenedAt { get; set; }
         public DateTime? ClosedAt { get; set; }
-        public TimeSpan? Duration { get; set; }
+        public string? Duration { get; set; }
         public decimal Total { get; set; }
     }
 }

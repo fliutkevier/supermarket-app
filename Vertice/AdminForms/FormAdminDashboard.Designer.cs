@@ -46,6 +46,7 @@
             tlpMenu = new TableLayoutPanel();
             btnLogOutMenu = new Krypton.Toolkit.KryptonButton();
             tableLayoutPanel2 = new TableLayoutPanel();
+            btnUsersMenu = new Krypton.Toolkit.KryptonButton();
             btnPaymentMethodsMenu = new Krypton.Toolkit.KryptonButton();
             btnInitSellMenu = new Krypton.Toolkit.KryptonButton();
             btnProductsMenu = new Krypton.Toolkit.KryptonButton();
@@ -136,6 +137,7 @@
             btnHistoryNavbar.TabIndex = 40;
             btnHistoryNavbar.Values.DropDownArrowColor = Color.Empty;
             btnHistoryNavbar.Values.Text = "HISTORIAL [F3]";
+            btnHistoryNavbar.Click += btnHistoryNavbar_Click;
             // 
             // btnProductsNavbar
             // 
@@ -148,6 +150,7 @@
             btnProductsNavbar.TabIndex = 40;
             btnProductsNavbar.Values.DropDownArrowColor = Color.Empty;
             btnProductsNavbar.Values.Text = "PRODUCTOS [F2]";
+            btnProductsNavbar.Click += btnProductsNavbar_Click;
             // 
             // btnSellNavbar
             // 
@@ -160,6 +163,7 @@
             btnSellNavbar.TabIndex = 40;
             btnSellNavbar.Values.DropDownArrowColor = Color.Empty;
             btnSellNavbar.Values.Text = "VENDER [F1]";
+            btnSellNavbar.Click += btnSellNavbar_Click;
             // 
             // btnHome
             // 
@@ -276,6 +280,7 @@
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tableLayoutPanel2.Controls.Add(btnUsersMenu, 2, 2);
             tableLayoutPanel2.Controls.Add(btnPaymentMethodsMenu, 0, 2);
             tableLayoutPanel2.Controls.Add(btnInitSellMenu, 0, 0);
             tableLayoutPanel2.Controls.Add(btnProductsMenu, 1, 0);
@@ -293,6 +298,19 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
             tableLayoutPanel2.Size = new Size(1274, 554);
             tableLayoutPanel2.TabIndex = 0;
+            // 
+            // btnUsersMenu
+            // 
+            btnUsersMenu.Anchor = AnchorStyles.None;
+            btnUsersMenu.Location = new Point(901, 385);
+            btnUsersMenu.Name = "btnUsersMenu";
+            btnUsersMenu.Size = new Size(320, 151);
+            btnUsersMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnUsersMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnUsersMenu.TabIndex = 51;
+            btnUsersMenu.Values.DropDownArrowColor = Color.Empty;
+            btnUsersMenu.Values.Text = "USUARIOS";
+            btnUsersMenu.Click += btnUsersMenu_Click;
             // 
             // btnPaymentMethodsMenu
             // 
@@ -349,6 +367,7 @@
             // btnProvidersMenu
             // 
             btnProvidersMenu.Anchor = AnchorStyles.None;
+            btnProvidersMenu.Enabled = false;
             btnProvidersMenu.Location = new Point(52, 200);
             btnProvidersMenu.Name = "btnProvidersMenu";
             btnProvidersMenu.Size = new Size(320, 151);
@@ -375,6 +394,7 @@
             // btnLogsMenu
             // 
             btnLogsMenu.Anchor = AnchorStyles.None;
+            btnLogsMenu.Enabled = false;
             btnLogsMenu.Location = new Point(901, 200);
             btnLogsMenu.Name = "btnLogsMenu";
             btnLogsMenu.Size = new Size(320, 151);
@@ -388,6 +408,7 @@
             // btnPurchaseHistory
             // 
             btnPurchaseHistory.Anchor = AnchorStyles.None;
+            btnPurchaseHistory.Enabled = false;
             btnPurchaseHistory.Location = new Point(476, 385);
             btnPurchaseHistory.Name = "btnPurchaseHistory";
             btnPurchaseHistory.Size = new Size(320, 151);
@@ -474,5 +495,6 @@
         private Krypton.Toolkit.KryptonButton btnEmployeesMenu;
         private Krypton.Toolkit.KryptonButton btnLogsMenu;
         private Krypton.Toolkit.KryptonButton btnPaymentMethodsMenu;
+        private Krypton.Toolkit.KryptonButton btnUsersMenu;
     }
 }

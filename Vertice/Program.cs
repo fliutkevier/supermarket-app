@@ -77,6 +77,19 @@ namespace Vertice
                     }
 
                     // Usuario Admin por defecto si no existe ninguno
+                    if (!context.Users.Any(u => u.Username == "lizbernal"))
+                    {
+                        var user = new User
+                        {
+                            Username = "lizbernal",
+                            Password = "4231",
+                            Role = 'A',
+                            IsActive = true
+                        };
+
+                        context.Users.Add(user);
+                        context.SaveChanges();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -110,15 +123,40 @@ namespace Vertice
             }
         }
 
-        static IHostBuilder CreateHostBuilder() => Host.CreateDefaultBuilder()
+        static IHostBuilder CreateHostBuilder() => 
+            Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration((context, config) =>
             {
                 config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             })
             .ConfigureServices((context, services) =>
             {
-                string connectionString = context.Configuration.GetConnectionString("DefaultConnection")!;
+                string connectionString;
+                
+                //DEV
+                //connectionString = context.Configuration.GetConnectionString("DefaultConnection")!;
 
+                
+                //PROD
+                //Definimos la ruta en ProgramData (para que los datos sobrevivan si desinstalas el exe)
+                string appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "VerticeApp");
+
+                if (!Directory.Exists(appDataFolder))
+                {
+                    Directory.CreateDirectory(appDataFolder);
+                }
+
+                string dbFilePath = Path.Combine(appDataFolder, "VerticeDB.mdf");
+
+                //El "AttachDbFileName" es lo que hace que use el archivo en ProgramData.
+                connectionString = $"Server=.\\SQLEXPRESS;Database=VerticeDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;AttachDbFileName={dbFilePath}";
+                
+                //========================
+
+                //DEVELOPMENT
+                //var connectionString = context.Configuration.GetConnectionString("DefaultConnection")!;
+
+                // Inyectam DbContext
                 services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString));
 
@@ -133,6 +171,7 @@ namespace Vertice
                 services.AddTransient<UserControlProviders>();
                 services.AddTransient<UserControlProvidersHistory>();
                 services.AddTransient<UserControlPaymentMethods>();
+                services.AddTransient<UserControlUsers>();
 
                 services.AddTransient<FormEmployeeEditor>();
                 services.AddTransient<FormPaymentMethodEditor>();
@@ -163,6 +202,9 @@ namespace Vertice
                 services.AddScoped<IEmployeeService, EmployeeService>();
                 services.AddScoped<ISessionService, SessionService>();
                 services.AddScoped<ISaleService, SaleService>();
+                services.AddScoped<IFiscalService, FiscalServiceAfipSDK>();
+                services.AddScoped<IRepository<FiscalDocument>, SqlRepository<FiscalDocument>>();
+                services.AddScoped<IUserService, UserService>();
             });
     }
 }

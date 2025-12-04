@@ -2,6 +2,7 @@
 using Application.Sales.Interfaces;
 using Application.Sessions.Dtos;
 using Application.Sessions.Interfaces;
+using Application.Users.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace WinForms
     {
         private readonly ISessionService _sessionService;
         private readonly ISaleService _saleService;
+        private readonly IUserService _userService;
         private readonly IServiceProvider _serviceProvider;
 
         private List<SessionGridDto> _sessionsLoaded = new List<SessionGridDto>();
@@ -27,11 +29,13 @@ namespace WinForms
         public UserControlHistory(
             ISessionService sessionService,
             ISaleService saleService,
+            IUserService userService, // <-- Inyectamos
             IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _sessionService = sessionService;
             _saleService = saleService;
+            _userService = userService;
             _serviceProvider = serviceProvider;
         }
 
@@ -40,10 +44,39 @@ namespace WinForms
             dtpSince.Value = DateTime.Now.AddMonths(-1);
             dtpTo.Value = DateTime.Now;
 
+            if (rbtDesDate != null) rbtDesDate.Checked = true;
 
-            //todas las sesiones sin filtro.
-            await LoadSessions(null, null);
+            try
+            {
+                await LoadUsers();
+                await LoadSessions(null, null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error de inicialización: " + ex.Message);
+            }
             ConfigSessionsGrid();
+        }
+
+        private async Task LoadUsers()
+        {
+            try
+            {
+                var users = await _userService.GetAllAsync();
+
+                // Creamos una lista temporal para agregar la opción "TODOS"
+                var userList = users.Select(u => new { u.Username, Display = u.Username }).ToList();
+                userList.Insert(0, new { Username = "ALL", Display = "TODOS LOS USUARIOS" });
+
+                cbxUsersFilter.DataSource = userList;
+                cbxUsersFilter.DisplayMember = "Display";
+                cbxUsersFilter.ValueMember = "Username";
+                cbxUsersFilter.SelectedIndex = 0; // Seleccionar TODOS
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar usuarios: " + ex.Message);
+            }
         }
 
         private void ConfigSalesGrid()
@@ -169,16 +202,14 @@ namespace WinForms
 
             var listaFiltrada = _sessionsLoaded.AsEnumerable();
 
-            // Filter text
-            string busqueda = txtFilter.Text.Trim().ToLower();
-            if (!string.IsNullOrEmpty(busqueda))
+            // 1. FILTRO USUARIO (ComboBox)
+            if (cbxUsersFilter.SelectedValue != null && cbxUsersFilter.SelectedValue.ToString() != "ALL")
             {
-                listaFiltrada = listaFiltrada.Where(s =>
-                    s.Username.ToLower().Contains(busqueda) ||
-                    s.Id.ToString().Contains(busqueda));
+                string userFilter = cbxUsersFilter.SelectedValue.ToString();
+                listaFiltrada = listaFiltrada.Where(s => s.Username == userFilter);
             }
 
-            // Order
+            // 2. ORDENAMIENTO
             if (rbtDesDate != null && rbtDesDate.Checked)
             {
                 listaFiltrada = listaFiltrada.OrderByDescending(s => s.OpenedAt);
@@ -186,6 +217,14 @@ namespace WinForms
             else if (rbtDesName != null && rbtDesName.Checked)
             {
                 listaFiltrada = listaFiltrada.OrderBy(s => s.Username);
+            }
+            else if (rbtMinMoney != null && rbtMinMoney.Checked)
+            {
+                listaFiltrada = listaFiltrada.OrderBy(s => s.Total);
+            }
+            else if (rbtMaxMoney != null && rbtMaxMoney.Checked)
+            {
+                listaFiltrada = listaFiltrada.OrderByDescending(s => s.Total);
             }
 
             dgvSessions.DataSource = listaFiltrada.ToList();
@@ -195,15 +234,19 @@ namespace WinForms
         {
             dtpSince.Value = DateTime.Now.AddMonths(-1);
             dtpTo.Value = DateTime.Now;
-            txtFilter.Text = "";
+
+            // Resetear combo y radios
+            if (cbxUsersFilter.Items.Count > 0) cbxUsersFilter.SelectedIndex = 0;
             if (rbtDesDate != null) rbtDesDate.Checked = true;
 
             await LoadSessions(null, null);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) => ApplyFilters();
+        private void cbxUsersFilter_SelectedIndexChanged(object sender, EventArgs e) => ApplyFilters();
         private void rbtDesDate_CheckedChanged(object sender, EventArgs e) { if (rbtDesDate.Checked) ApplyFilters(); }
         private void rbtDesName_CheckedChanged(object sender, EventArgs e) { if (rbtDesName.Checked) ApplyFilters(); }
+        private void rbtMinMoney_CheckedChanged(object sender, EventArgs e) { if (rbtMinMoney.Checked) ApplyFilters(); }
+        private void rbtMaxMoney_CheckedChanged(object sender, EventArgs e) { if (rbtMaxMoney.Checked) ApplyFilters(); }
 
         private async void dgvSessions_SelectionChanged(object sender, EventArgs e)
         {

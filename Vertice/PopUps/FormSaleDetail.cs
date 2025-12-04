@@ -1,6 +1,7 @@
 ﻿using Application.Sales.Dtos;
 using Application.Sales.Interfaces;
 using Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +18,19 @@ namespace WinForms.PopUps
     public partial class FormSaleDetail : Form
     {
         private readonly ISaleService _saleService;
+        private readonly IConfiguration _config;
         private int _saleId;
 
         // Para Imprimir
         private SaleGridDto? _saleHeader;
         private List<SaleDetailViewDto>? _saleDetails;
+        private FiscalDocument? _fiscalDoc;
 
-        public FormSaleDetail(ISaleService saleService)
+        public FormSaleDetail(ISaleService saleService, IConfiguration configuration)
         {
             InitializeComponent();
             _saleService = saleService;
+            _config = configuration;
         }
 
         private void FormSaleDetail_Load(object sender, EventArgs e)
@@ -46,24 +50,32 @@ namespace WinForms.PopUps
                 var saleDeatils = await _saleService.GetSaleDetailsAsync(_saleId);
                 _saleDetails = saleDeatils.ToList();
 
-                if (_saleHeader == null)
+                _fiscalDoc = await _saleService.GetFiscalDocumentBySaleIdAsync(_saleId);
+
+                if (_saleHeader != null)
                 {
-                    MessageBox.Show("No se encontró la venta.");
-                    this.Close();
-                    return;
+                    lblSaleNumber.Text = $"Nro Venta\n#{_saleHeader.Id}";
+                    lblSaleDate.Text = $"Fecha\n{_saleHeader.Date.ToString("dd/MM/yyyy HH:mm")}";
+                    lblSaleUser.Text = $"Usuario\n{_saleHeader.User}";
+                    lblPaymentMethod.Text = $"Método\n{_saleHeader.PaymentMethod}";
+                    lblTotal.Text = $"Total\n{_saleHeader.Total.ToString("C2")}";
                 }
 
-                
-                lblSaleNumber.Text = $"Nro Venta\n#{_saleHeader.Id}";
-                lblSaleDate.Text = $"Fecha\n{_saleHeader.Date.ToString("dd/MM/yyyy HH:mm")}";
-                lblSaleUser.Text = $"Usuario\n{_saleHeader.User}";
-                lblPaymentMethod.Text = $"Método\n{_saleHeader.PaymentMethod}";
-                lblTotal.Text = $"Total\n{_saleHeader.Total.ToString("C2")}";
-
-
-                //Configurar y Llenar Grilla
                 dgvProducts.DataSource = _saleDetails;
                 ConfigGrid();
+
+                if (_fiscalDoc != null)
+                {
+                    chkAFIP.Checked = true;
+                    chkAFIP.Enabled = false;
+                    chkAFIP.Text = $"Facturado";
+                }
+                else
+                {
+                    chkAFIP.Checked = false;
+                    chkAFIP.Enabled = false;
+                    chkAFIP.Text = "No Facturado";
+                }
             }
             catch (Exception ex)
             {
@@ -120,6 +132,9 @@ namespace WinForms.PopUps
 
             try
             {
+                var printer = new TicketPrinter();
+                string nombreImpresora = _config["AfipSdk:PrinterName"];
+
                 var ticketItems = _saleDetails.Select(d => new TicketItem
                 {
                     ProductName = d.ProductName,
@@ -127,20 +142,59 @@ namespace WinForms.PopUps
                     Subtotal = d.SubTotal
                 }).ToList();
 
-                var printer = new TicketPrinter();
-
                 decimal total = _saleHeader.Total;
                 decimal cash = 0;
 
-                printer.PrintTicket(
-                    _saleHeader.Id,
-                    _saleHeader.Date,
-                    ticketItems,
-                    _saleHeader.Total,
-                    _saleHeader.PaymentMethod,
-                    total,
-                    cash
-                );
+                if (_fiscalDoc != null && chkAFIP.Checked)
+                {
+                    // === IMPRESIÓN FISCAL ===
+
+                    long cuitEmisor = long.Parse(_config["AfipSdk:Cuit"] ?? "0");
+
+                    // Reconstruir objeto AfipQR
+                    var datosQr = new AfipQR
+                    {
+                        fecha = _saleHeader.Date.ToString("yyyy-MM-dd"), // Fecha de la venta original
+                        cuit = cuitEmisor,
+                        ptoVta = _fiscalDoc.PointOfSale,
+                        tipoCmp = _fiscalDoc.InvoiceType,
+                        nroCmp = (int)_fiscalDoc.InvoiceNumber,
+                        importe = _saleHeader.Total,
+                        moneda = "PES",
+                        ctz = 1,
+                        // Si guardaste el tipo/doc del cliente en FiscalDocument, úsalo. Si no, default:
+                        tipoDocRec = int.Parse(_fiscalDoc.CustomerDocType ?? "99"),
+                        nroDocRec = long.Parse(_fiscalDoc.CustomerDocNumber ?? "0"),
+                        tipoCodAut = "E",
+                        codAut = long.Parse(_fiscalDoc.CAE)
+                    };
+
+                    printer.ImprimirFactura(
+                        datosQr,
+                        _fiscalDoc,
+                        "CONSUMIDOR FINAL",
+                        _fiscalDoc.CustomerDocNumber ?? "0",
+                        ticketItems,
+                        _saleHeader.Date,
+                        nombreImpresora
+                    );
+                }
+                else
+                {
+                    decimal paysWith = _saleHeader.Total;
+                    decimal change = 0;
+
+                    printer.PrintTicket(
+                        _saleHeader.Id,
+                        _saleHeader.Date,
+                        ticketItems,
+                        _saleHeader.Total,
+                        _saleHeader.PaymentMethod,
+                        paysWith,
+                        change,
+                        nombreImpresora
+                    );
+                }
 
                 MessageBox.Show("Ticket enviado a la impresora.");
             }

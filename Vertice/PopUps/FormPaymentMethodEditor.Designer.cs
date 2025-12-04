@@ -68,6 +68,7 @@
             tableLayoutPanel1.SetColumnSpan(txtName, 2);
             txtName.CueHint.CueHintText = "Nombre *";
             txtName.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtName.CueHint.Padding = new Padding(0);
             txtName.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtName.Location = new Point(30, 97);
             txtName.Name = "txtName";
@@ -76,7 +77,7 @@
             txtName.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtName.StateCommon.Border.Width = 2;
             txtName.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtName.TabIndex = 24;
+            txtName.TabIndex = 0;
             txtName.TextAlign = HorizontalAlignment.Center;
             // 
             // lblTitle
@@ -96,7 +97,7 @@
             tableLayoutPanel1.SetColumnSpan(txtRecharge, 2);
             txtRecharge.CueHint.CueHintText = "Recargo % (0 por defecto)";
             txtRecharge.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtRecharge.CueHint.Padding = new Padding(-1, -1, -1, 0);
+            txtRecharge.CueHint.Padding = new Padding(0);
             txtRecharge.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtRecharge.Location = new Point(131, 171);
             txtRecharge.Name = "txtRecharge";
@@ -105,7 +106,7 @@
             txtRecharge.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtRecharge.StateCommon.Border.Width = 2;
             txtRecharge.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtRecharge.TabIndex = 25;
+            txtRecharge.TabIndex = 1;
             txtRecharge.TextAlign = HorizontalAlignment.Center;
             // 
             // txtDiscount
@@ -114,7 +115,7 @@
             tableLayoutPanel1.SetColumnSpan(txtDiscount, 2);
             txtDiscount.CueHint.CueHintText = "Descuento % (0 por defecto)";
             txtDiscount.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtDiscount.CueHint.Padding = new Padding(-1, -1, -1, 0);
+            txtDiscount.CueHint.Padding = new Padding(0);
             txtDiscount.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtDiscount.Location = new Point(131, 245);
             txtDiscount.Name = "txtDiscount";
@@ -123,7 +124,7 @@
             txtDiscount.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtDiscount.StateCommon.Border.Width = 2;
             txtDiscount.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtDiscount.TabIndex = 26;
+            txtDiscount.TabIndex = 2;
             txtDiscount.TextAlign = HorizontalAlignment.Center;
             // 
             // btnCancel
@@ -134,7 +135,7 @@
             btnCancel.Size = new Size(127, 40);
             btnCancel.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnCancel.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold | FontStyle.Italic);
-            btnCancel.TabIndex = 28;
+            btnCancel.TabIndex = 4;
             btnCancel.Values.DropDownArrowColor = Color.Empty;
             btnCancel.Values.Text = "Cancelar";
             btnCancel.Click += btnCancel_Click;
@@ -147,15 +148,17 @@
             btnAdd.Size = new Size(127, 40);
             btnAdd.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnAdd.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold | FontStyle.Italic);
-            btnAdd.TabIndex = 27;
+            btnAdd.TabIndex = 3;
             btnAdd.Values.DropDownArrowColor = Color.Empty;
             btnAdd.Values.Text = "Agregar";
             btnAdd.Click += btnAdd_Click;
             // 
             // FormPaymentMethodEditor
             // 
+            AcceptButton = btnAdd;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = btnCancel;
             ClientSize = new Size(489, 448);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.None;

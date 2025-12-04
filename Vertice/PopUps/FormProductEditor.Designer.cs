@@ -82,7 +82,7 @@
             lblTitle.Location = new Point(381, 14);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(169, 29);
-            lblTitle.TabIndex = 22;
+            lblTitle.TabIndex = 0;
             lblTitle.Values.Text = "Agregar Producto";
             // 
             // txtCode
@@ -100,7 +100,7 @@
             txtCode.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtCode.StateCommon.Border.Width = 2;
             txtCode.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtCode.TabIndex = 24;
+            txtCode.TabIndex = 1;
             txtCode.TextAlign = HorizontalAlignment.Center;
             // 
             // txtName
@@ -109,6 +109,7 @@
             tlpProducts.SetColumnSpan(txtName, 2);
             txtName.CueHint.CueHintText = "Nombre del Producto";
             txtName.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtName.CueHint.Padding = new Padding(0);
             txtName.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtName.Location = new Point(486, 72);
             txtName.Name = "txtName";
@@ -117,7 +118,7 @@
             txtName.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtName.StateCommon.Border.Width = 2;
             txtName.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtName.TabIndex = 20;
+            txtName.TabIndex = 2;
             txtName.TextAlign = HorizontalAlignment.Center;
             // 
             // txtStock
@@ -126,6 +127,7 @@
             tlpProducts.SetColumnSpan(txtStock, 2);
             txtStock.CueHint.CueHintText = "Stock Inicial";
             txtStock.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtStock.CueHint.Padding = new Padding(0);
             txtStock.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtStock.Location = new Point(170, 129);
             txtStock.Name = "txtStock";
@@ -134,7 +136,7 @@
             txtStock.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtStock.StateCommon.Border.Width = 2;
             txtStock.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtStock.TabIndex = 25;
+            txtStock.TabIndex = 3;
             txtStock.TextAlign = HorizontalAlignment.Center;
             // 
             // txtCostPrice
@@ -143,6 +145,7 @@
             tlpProducts.SetColumnSpan(txtCostPrice, 2);
             txtCostPrice.CueHint.CueHintText = "Precio Costo";
             txtCostPrice.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCostPrice.CueHint.Padding = new Padding(0);
             txtCostPrice.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtCostPrice.Location = new Point(486, 129);
             txtCostPrice.Name = "txtCostPrice";
@@ -151,7 +154,7 @@
             txtCostPrice.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtCostPrice.StateCommon.Border.Width = 2;
             txtCostPrice.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtCostPrice.TabIndex = 26;
+            txtCostPrice.TabIndex = 4;
             txtCostPrice.TextAlign = HorizontalAlignment.Center;
             // 
             // txtGainPercent
@@ -160,6 +163,7 @@
             tlpProducts.SetColumnSpan(txtGainPercent, 2);
             txtGainPercent.CueHint.CueHintText = "%";
             txtGainPercent.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtGainPercent.CueHint.Padding = new Padding(0);
             txtGainPercent.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtGainPercent.Location = new Point(653, 186);
             txtGainPercent.Name = "txtGainPercent";
@@ -168,7 +172,7 @@
             txtGainPercent.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtGainPercent.StateCommon.Border.Width = 2;
             txtGainPercent.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtGainPercent.TabIndex = 28;
+            txtGainPercent.TabIndex = 5;
             txtGainPercent.TextAlign = HorizontalAlignment.Center;
             txtGainPercent.TextChanged += txtGainPercent_TextChanged;
             // 
@@ -178,6 +182,7 @@
             tlpProducts.SetColumnSpan(txtPrice, 2);
             txtPrice.CueHint.CueHintText = "Precio Venta";
             txtPrice.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPrice.CueHint.Padding = new Padding(0);
             txtPrice.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtPrice.Location = new Point(589, 243);
             txtPrice.Name = "txtPrice";
@@ -186,7 +191,7 @@
             txtPrice.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtPrice.StateCommon.Border.Width = 2;
             txtPrice.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
-            txtPrice.TabIndex = 27;
+            txtPrice.TabIndex = 6;
             txtPrice.TextAlign = HorizontalAlignment.Center;
             // 
             // btnCancel
@@ -197,7 +202,7 @@
             btnCancel.Size = new Size(127, 40);
             btnCancel.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnCancel.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold | FontStyle.Italic);
-            btnCancel.TabIndex = 23;
+            btnCancel.TabIndex = 8;
             btnCancel.Values.DropDownArrowColor = Color.Empty;
             btnCancel.Values.Text = "Cancelar";
             btnCancel.Click += btnCancel_Click;
@@ -210,16 +215,18 @@
             btnAdd.Size = new Size(127, 40);
             btnAdd.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnAdd.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold | FontStyle.Italic);
-            btnAdd.TabIndex = 18;
+            btnAdd.TabIndex = 7;
             btnAdd.Values.DropDownArrowColor = Color.Empty;
             btnAdd.Values.Text = "Agregar";
             btnAdd.Click += btnAdd_Click;
             // 
             // FormProductEditor
             // 
+            AcceptButton = btnAdd;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(229, 229, 229);
+            CancelButton = btnCancel;
             ClientSize = new Size(935, 460);
             Controls.Add(tlpProducts);
             FormBorderStyle = FormBorderStyle.None;

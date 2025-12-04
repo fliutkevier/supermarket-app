@@ -1,4 +1,5 @@
-﻿using Application.Products.Interfaces;
+﻿using Application.Products.Dtos;
+using Application.Products.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace WinForms
     {
         private readonly IProductService _productService;
         private readonly IServiceProvider _serviceProvider;
+        private const string CODIGO_VARIOS = "VARIOS";
+        private List<ProductGridDto> _productsLoaded = new List<ProductGridDto>();
         public UserControlProducts(IProductService productService,
             IServiceProvider serviceProvider)
         {
@@ -46,15 +49,59 @@ namespace WinForms
             try
             {
                 var products = await _productService.GetAllForGridAsync();
+                _productsLoaded = products.ToList();
 
                 dgvProducts.DataSource = products.ToList();
 
                 ConfigGrid();
+                ApplyFilters();
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar los productos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ApplyFilters()
+        {
+            if (_productsLoaded == null) return;
+
+            var listaFiltrada = _productsLoaded.AsEnumerable();
+
+            listaFiltrada = listaFiltrada.Where(p => p.Code != CODIGO_VARIOS);
+
+            // 1. Filtro de Texto (Código o Nombre)
+            string busqueda = txtFilter.Text.Trim().ToLower();
+            if (!string.IsNullOrEmpty(busqueda))
+            {
+                listaFiltrada = listaFiltrada.Where(p =>
+                    p.Name.ToLower().Contains(busqueda) ||
+                    p.Code.ToLower().Contains(busqueda));
+            }
+
+            // 2. Ordenamiento (Radio Buttons)
+            if (rbtDesDate != null && rbtDesDate.Checked)
+            {
+                // Más nuevos (recién modificados) arriba
+                listaFiltrada = listaFiltrada.OrderByDescending(p => p.LastStockUpdate);
+            }
+            else if (rbtDesName != null && rbtDesName.Checked)
+            {
+                listaFiltrada = listaFiltrada.OrderBy(p => p.Name);
+            }
+            else if (rbtMinStock != null && rbtMinStock.Checked)
+            {
+                // Ver qué falta comprar
+                listaFiltrada = listaFiltrada.OrderBy(p => p.Stock);
+            }
+            else if (rbtMaxStock != null && rbtMaxStock.Checked)
+            {
+                // Ver qué sobra
+                listaFiltrada = listaFiltrada.OrderByDescending(p => p.Stock);
+            }
+
+            dgvProducts.DataSource = listaFiltrada.ToList();
         }
 
         private void ConfigGrid()
@@ -81,7 +128,6 @@ namespace WinForms
 
             dgvProducts.Columns["LastStockUpdate"].HeaderText = "Últ. Actualización";
             dgvProducts.Columns["LastStockUpdate"].DefaultCellStyle.Format = "g"; // Formato fecha corta + hora
-
         }
 
         private void btnAddStock_Click(object sender, EventArgs e)
@@ -141,5 +187,26 @@ namespace WinForms
                 }
             }
         }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilters();
+        }
+        
+        private void btnResetFilters_Click(object sender, EventArgs e)
+        {
+            txtFilter.Text = "";
+            if (rbtDesDate != null) rbtDesDate.Checked = true;
+
+            LoadGrid();
+        }
+
+        private void rbtDesDate_CheckedChanged(object sender, EventArgs e) { if (rbtDesDate.Checked) ApplyFilters(); }
+
+        private void rbtDesName_CheckedChanged(object sender, EventArgs e) { if (rbtDesName.Checked) ApplyFilters(); }
+
+        private void rbtMinStock_CheckedChanged(object sender, EventArgs e) { if (rbtMinStock.Checked) ApplyFilters(); }
+
+        private void rbtMaxStock_CheckedChanged(object sender, EventArgs e) { if (rbtMaxStock.Checked) ApplyFilters(); }
     }
 }

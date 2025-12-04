@@ -32,7 +32,10 @@ namespace Application.Sessions
             }
 
             activeSession.ClosedAt = DateTime.Now;
-            activeSession.TotalDuration = activeSession.ClosedAt.Value - activeSession.OpenedAt;
+
+            TimeSpan duracion = activeSession.ClosedAt.Value - activeSession.OpenedAt;
+
+            activeSession.TotalDuration = duracion.TotalHours;
 
             _sessionRepository.Update(activeSession);
             await _unitOfWork.SaveChangesAsync();
@@ -62,9 +65,19 @@ namespace Application.Sessions
                     Date = s.Date,
                     OpenedAt = s.OpenedAt,
                     ClosedAt = s.ClosedAt,
-                    Duration = s.TotalDuration,
+                    Duration = s.TotalDuration.HasValue
+                           ? FormatDuration(s.TotalDuration.Value)
+                           : "-",
                     Total = s.Total
                 });
+        }
+
+        private string FormatDuration(double totalHours)
+        {
+            TimeSpan ts = TimeSpan.FromHours(totalHours);
+            // Convertimos a entero las horas totales para que muestre >24 si es necesario
+            int horas = (int)ts.TotalHours;
+            return $"{horas}hs {ts.Minutes}m";
         }
 
         public async Task<SessionStatusDto?> GetCurrentSessionAsync(string username)
