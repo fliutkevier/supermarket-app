@@ -7,22 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AuditLogs\Dtos\" />
-    <Folder Include="AuditLogs\Interfaces\" />
     <Folder Include="AuditLogs\Validations\" />
     <Folder Include="Employees\Validations\" />
     <Folder Include="PaymentMethods\Validations\" />
     <Folder Include="Products\Validations\" />
-    <Folder Include="ProviderMovements\Dtos\" />
-    <Folder Include="ProviderMovements\Interfaces\" />
     <Folder Include="ProviderMovements\Validations\" />
     <Folder Include="Providers\Validations\" />
-    <Folder Include="SaleDetails\Dtos\" />
-    <Folder Include="SaleDetails\Interfaces\" />
-    <Folder Include="SaleDetails\Validations\" />
     <Folder Include="Sales\Validations\" />
     <Folder Include="Sessions\Validations\" />
     <Folder Include="Users\Validations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LinqKit.Core" Version="1.2.9" />
   </ItemGroup>
 
   <ItemGroup>

@@ -27,13 +27,12 @@ namespace WinForms
         private readonly IPaymentMethodService _paymentMethodService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _config;
+        private readonly TicketPrinter _ticketPrinter;
 
         private BindingList<SaleItemViewModel> _cartItems;
         private List<PaymentMethodGridDto> _paymentMethods = new List<PaymentMethodGridDto>();
 
         private int? _lastSaleId = null;
-        private CreateSaleDto? _lastSaleDto = null;
-        private decimal _lastSaleTotal = 0;
         private decimal _currentTotal = 0;
         private const string CODIGO_VARIOS = "VARIOS";
 
@@ -42,7 +41,8 @@ namespace WinForms
             IProductService productService,
             IPaymentMethodService paymentMethodService,
             IServiceProvider serviceProvider,
-            IConfiguration config)
+            IConfiguration config,
+            TicketPrinter ticketPrinter)
         {
             InitializeComponent();
             _saleService = saleService;
@@ -50,6 +50,7 @@ namespace WinForms
             _paymentMethodService = paymentMethodService;
             _serviceProvider = serviceProvider;
             _config = config;
+            _ticketPrinter = ticketPrinter;
 
             _cartItems = new BindingList<SaleItemViewModel>();
         }
@@ -203,7 +204,8 @@ namespace WinForms
                 {
                     string lastProduct = $"{product.Name} (x{quantityToAdd})".ToUpper();
                     lblLastProduct.Text = lastProduct;
-                    lblLastProduct.ForeColor = System.Drawing.Color.Green;
+                    //lblLastProduct.ForeColor = System.Drawing.Color.Green;
+                    lblLastProduct.StateCommon.ShortText.Color1 = System.Drawing.Color.Green;
                 }
 
                 UpdateCalcs();
@@ -257,18 +259,18 @@ namespace WinForms
                 if (cash >= total)
                 {
                     lblChange.Text = $"VUELTO\n$ {change.ToString("N2")}";
-                    lblChange.ForeColor = System.Drawing.Color.Green;
+                    lblChange.StateCommon.ShortText.Color1 = System.Drawing.Color.Red;
                 }
                 else
                 {
                     lblChange.Text = $"NO ALCANZA";
-                    lblChange.ForeColor = System.Drawing.Color.Black;
+                    lblChange.StateCommon.ShortText.Color1 = System.Drawing.Color.Black;
                 }
             }
             else
             {
                 lblChange.Text = $"VUELTO\n$ 0.00";
-                lblChange.ForeColor = System.Drawing.Color.Black;
+                lblChange.StateCommon.ShortText.Color1 = System.Drawing.Color.Black;
             }
         }
 
@@ -287,13 +289,13 @@ namespace WinForms
             }).ToList();
 
             string nombreImpresora = _config["AfipSdk:PrinterName"] ?? "Microsoft Print to PDF";
-            var printer = new TicketPrinter();
-            printer.PrintTicket(0, DateTime.Now, itemsTicket, total, medioPago, pagaCon, pagaCon - total, nombreImpresora);
+            _ticketPrinter.PrintTicket(0, DateTime.Now, itemsTicket, total, medioPago, pagaCon, pagaCon - total, nombreImpresora);
         }
 
         private void ConfigGrid()
         {
             dgvSaleProducts.AllowUserToAddRows = false;
+            dgvSaleProducts.AllowUserToDeleteRows = false;
             dgvSaleProducts.RowHeadersVisible = false;
             dgvSaleProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvSaleProducts.ReadOnly = true;
@@ -419,6 +421,7 @@ namespace WinForms
                 SaleResultDto result = await _saleService.CreateSaleAsync(saleDto);
 
                 _lastSaleId = result.SaleId;
+                if (btnShowLastSale != null) btnShowLastSale.Enabled = true;
                 decimal totalImpresion = _currentTotal;
 
                 decimal paysWith = 0;
@@ -457,11 +460,10 @@ namespace WinForms
                             Subtotal = x.Subtotal
                         }).ToList();
 
-                        var printer = new TicketPrinter();
 
                         string nombreImpresora = _config["AfipSdk:PrinterName"] ?? "Microsoft Print to PDF";
                         // Imprimimos pasando los datos QR y la lista visual
-                        printer.ImprimirFactura(
+                        _ticketPrinter.ImprimirFactura(
                             datosQr,
                             result.FiscalData,
                             "CONSUMIDOR FINAL",
@@ -489,11 +491,11 @@ namespace WinForms
                 string msg = ticket ? "¡Venta registrada e impresa!" : "¡Venta registrada!";
                 MessageBox.Show(msg, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if(isFiscal)
+                if (isFiscal)
                 {
                     MessageBox.Show("¡Venta Fiscal Autorizada!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                
+
 
                 txtProduct.Focus();
             }
@@ -569,6 +571,26 @@ namespace WinForms
         private async void btnSaleAFIP_Click(object sender, EventArgs e)
         {
             await MakeSale(true, true);
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            _cartItems.Clear();
+            if (txtCash != null) txtCash.Text = "";
+            if (lblLastProduct != null) lblLastProduct.Text = "";
+            _currentTotal = 0;
+
+            UpdateCalcs();
+            txtProduct.Focus();
+        }
+
+        private void txtVariosAmount_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                btnAddVarious_Click(sender, e);
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.AuditLogs.Interfaces;
+using Domain.Entities;
+using Domain.RepositoryInterfaces;
 using QRCoder;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,17 @@ namespace WinForms.Helpers
 {
     public class TicketPrinter
     {
+        private readonly IAuditLogService _auditLogService;
+        private readonly IUnitOfWork _unitOfWork;
+        public TicketPrinter(IAuditLogService auditLogService, IUnitOfWork unitOfWork)
+        {
+            _auditLogService = auditLogService;
+            _unitOfWork = unitOfWork;
+        }
+
         private readonly string _shopName = "VERTICE PROYECTOS SA";
         private readonly string _shopAddress = "Eva Perón 4676";
         private readonly string _shopPhone = "Tel: (011) 6855-8679";
-        private readonly string _shopCuit = "30719138825";
         private readonly string _empresaCondicionIva = "IVA RESPONSABLE INSCRIPTO";
         private readonly string _shopLocality = "(1650) Billinghurst, Buenos Aires";
         private readonly string _ingBrutos = "Ing. Brutos: 2023528";
@@ -27,11 +36,12 @@ namespace WinForms.Helpers
         private const int ContentMargin = 2;
         private const int ContentWidth = PaperWidth - (ContentMargin * 2);
 
-        public void PrintTicket(int saleNumber, DateTime date, List<TicketItem> items, decimal total, string paymentMethod, decimal paysWith, decimal change, string nombreImpresora = null)
+        public async void PrintTicket(int saleNumber, DateTime date, List<TicketItem> items, decimal total, string paymentMethod, decimal paysWith, decimal change, string nombreImpresora = null)
         {
             PrintDocument pd = CreatePrintDocument(nombreImpresora);
             pd.PrintPage += (sender, e) => ConfigurarPaginaNoFiscal(e, saleNumber, date, items, total, paymentMethod, paysWith, change);
             Print(pd);
+            await _auditLogService.LogAsync("TICKET NO FISCAL impreso", $"Venta: {saleNumber}");
         }
 
         private void ConfigurarPaginaNoFiscal(PrintPageEventArgs e, int saleNumber, DateTime date, List<TicketItem> items, decimal total, string paymentMethod, decimal paysWith, decimal change)
@@ -99,11 +109,12 @@ namespace WinForms.Helpers
         }
 
 
-        public void ImprimirFactura(AfipQR datosQr, FiscalDocument datosFiscalesBD, string nombreCliente, string docCliente, List<TicketItem> items, DateTime fechaVenta, string nombreImpresora = null)
+        public async void ImprimirFactura(AfipQR datosQr, FiscalDocument datosFiscalesBD, string nombreCliente, string docCliente, List<TicketItem> items, DateTime fechaVenta, string nombreImpresora = null)
         {
             PrintDocument pd = CreatePrintDocument(nombreImpresora);
             pd.PrintPage += (sender, e) => ConfigurarPaginaFiscal(e, datosQr, datosFiscalesBD, nombreCliente, docCliente, items, fechaVenta);
             Print(pd);
+            await _auditLogService.LogAsync("TICKET FISCAL impreso", "Venta Fiscal");
         }
 
         private void ConfigurarPaginaFiscal(PrintPageEventArgs e, AfipQR datosQr, FiscalDocument datosFiscalesBD, string nombreCliente, string docCliente, List<TicketItem> items, DateTime fechaVenta)
@@ -193,9 +204,26 @@ namespace WinForms.Helpers
                 drawDual("IVA 21%:", iva.ToString("N2"), fontRegular);
             }
 
+            // 1. Total
             y += 5;
             drawDual("TOTAL", datosQr.importe.ToString("C2"), fontTotal);
             y += 5;
+
+            // 2. Texto de Transparencia (En letra chica y centrado)
+            // Lo dividimos en dos líneas para asegurar que entre en el ancho del ticket
+            Font fontTransparencia = new Font("Arial", 7, FontStyle.Regular);
+            drawCenter("REG. TRANSPARENCIA FISCAL AL CONSUMIDOR", fontTransparencia);
+            drawCenter("SOLO SON INFORMADOS IMPUESTOS NACIONALES", fontTransparencia);
+
+            // 3. IVA Contenido (Informativo)
+            // Cálculo: Total - (Total / 1.21) para obtener el monto exacto del 21% incluido
+            decimal ivaContenido = datosQr.importe - (datosQr.importe / 1.21m);
+            drawDual("IVA CONTENIDO", ivaContenido.ToString("C2"), fontRegular);
+
+            /*
+            y += 5;
+            drawDual("TOTAL", datosQr.importe.ToString("C2"), fontTotal);
+            y += 5;*/
 
             // 6. PIE FISCAL (Lado a Lado para 80mm)
             /*float qrSize = 95;

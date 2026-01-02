@@ -1,4 +1,5 @@
-﻿using Application.Sessions.Dtos;
+﻿using Application.AuditLogs.Interfaces;
+using Application.Sessions.Dtos;
 using Application.Sessions.Interfaces;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -15,11 +16,13 @@ namespace Application.Sessions
     {
         private readonly ISessionRepository _sessionRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuditLogService _auditLogService;
 
-        public SessionService(ISessionRepository sessionRepository, IUnitOfWork unitOfWork)
+        public SessionService(ISessionRepository sessionRepository, IUnitOfWork unitOfWork, IAuditLogService audit)
         {
             _sessionRepository = sessionRepository;
             _unitOfWork = unitOfWork;
+            _auditLogService = audit;
         }
 
         public async Task CloseSessionAsync(string username)
@@ -38,6 +41,7 @@ namespace Application.Sessions
             activeSession.TotalDuration = duracion.TotalHours;
 
             _sessionRepository.Update(activeSession);
+            await _auditLogService.LogAsync("CAJA Cerrada", $"Número de caja: {activeSession.Id}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -120,6 +124,7 @@ namespace Application.Sessions
             };
 
             await _sessionRepository.AddAsync(newSession);
+            await _auditLogService.LogAsync("CAJA abierta", $"Numero: {newSession.Id}");
             await _unitOfWork.SaveChangesAsync();
         }
 

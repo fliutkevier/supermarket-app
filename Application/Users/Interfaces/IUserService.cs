@@ -13,5 +13,7 @@ namespace Application.Users.Interfaces
         Task CreateUserAsync(CreateUserDto dto);
         Task DeleteUserAsync(string username);
         Task ChangePasswordAsync(string username, string newPassword);
+        Task<IEnumerable<UserGridDto>> GetDeletedAsync();
+        Task RestoreAsync(string username);
     }
 }

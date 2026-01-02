@@ -14,5 +14,7 @@ namespace Application.PaymentMethods.Interfaces
         Task<PaymentMethodDetailDto?> GetForEditAsync(int id);
         Task UpdateAsync(UpdatePaymentMethodDto dto);
         Task SoftDeleteAsync(int id);
+        Task<IEnumerable<PaymentMethodGridDto>> GetDeletedAsync();
+        Task RestoreAsync(int id);
     }
 }

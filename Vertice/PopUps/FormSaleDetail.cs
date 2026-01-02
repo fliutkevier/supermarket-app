@@ -19,6 +19,7 @@ namespace WinForms.PopUps
     {
         private readonly ISaleService _saleService;
         private readonly IConfiguration _config;
+        private readonly TicketPrinter _ticketPrinter;
         private int _saleId;
 
         // Para Imprimir
@@ -26,11 +27,12 @@ namespace WinForms.PopUps
         private List<SaleDetailViewDto>? _saleDetails;
         private FiscalDocument? _fiscalDoc;
 
-        public FormSaleDetail(ISaleService saleService, IConfiguration configuration)
+        public FormSaleDetail(ISaleService saleService, IConfiguration configuration, TicketPrinter ticketPrinter)
         {
             InitializeComponent();
             _saleService = saleService;
             _config = configuration;
+            _ticketPrinter = ticketPrinter;
         }
 
         private void FormSaleDetail_Load(object sender, EventArgs e)
@@ -132,7 +134,6 @@ namespace WinForms.PopUps
 
             try
             {
-                var printer = new TicketPrinter();
                 string nombreImpresora = _config["AfipSdk:PrinterName"];
 
                 var ticketItems = _saleDetails.Select(d => new TicketItem
@@ -143,7 +144,6 @@ namespace WinForms.PopUps
                 }).ToList();
 
                 decimal total = _saleHeader.Total;
-                decimal cash = 0;
 
                 if (_fiscalDoc != null && chkAFIP.Checked)
                 {
@@ -169,7 +169,7 @@ namespace WinForms.PopUps
                         codAut = long.Parse(_fiscalDoc.CAE)
                     };
 
-                    printer.ImprimirFactura(
+                    _ticketPrinter.ImprimirFactura(
                         datosQr,
                         _fiscalDoc,
                         "CONSUMIDOR FINAL",
@@ -184,7 +184,7 @@ namespace WinForms.PopUps
                     decimal paysWith = _saleHeader.Total;
                     decimal change = 0;
 
-                    printer.PrintTicket(
+                    _ticketPrinter.PrintTicket(
                         _saleHeader.Id,
                         _saleHeader.Date,
                         ticketItems,

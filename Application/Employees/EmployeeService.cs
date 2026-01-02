@@ -1,4 +1,5 @@
-﻿using Application.Employees.Dtos;
+﻿using Application.AuditLogs.Interfaces;
+using Application.Employees.Dtos;
 using Application.Employees.Interfaces;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -15,15 +16,18 @@ namespace Application.Employees
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuditLogService _auditLogService;
 
         public EmployeeService(
             IEmployeeRepository repository,
             IUserRepository userRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IAuditLogService auditLogService)
         {
             _employeeRepository = repository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IEnumerable<EmployeeLookupDto>> GetEmployeesWithoutUserAsync()
@@ -74,7 +78,8 @@ namespace Application.Employees
                 {
                     Username = dto.Username,
                     Password = dto.Password,
-                    Role = dto.UserRole[0]
+                    Role = dto.UserRole[0],
+                    IsActive = true
                 };
 
                 await _userRepository.AddAsync(newUser);
@@ -97,6 +102,7 @@ namespace Application.Employees
             };
 
             await _employeeRepository.AddAsync(entity);
+            await _auditLogService.LogAsync("EMPLEADO Creado", $"DNI: {entity.Dni}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -148,6 +154,7 @@ namespace Application.Employees
             employee.IsActive = false;
 
             _employeeRepository.Update(employee);
+            await _auditLogService.LogAsync("EMPLEADO Dado de baja", $"DNI: {dni}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -187,6 +194,36 @@ namespace Application.Employees
             employee.IsActive = dto.IsActive;
 
             _employeeRepository.Update(employee);
+            await _auditLogService.LogAsync("EMPLEADO Modificado", $"DNI: {dto.Dni}");
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<EmployeeGridDto>> GetDeletedAsync()
+        {
+            var deletedEmployees = await _employeeRepository.GetAsync(p => !p.IsActive);
+
+            return deletedEmployees.Select(e => new EmployeeGridDto
+            {
+                Dni = e.Dni,
+                Cuit = e.CUIT,
+                FullName = $"{e.LastName}, {e.Name}",
+                Phone = e.Phone,
+                Email = e.Email,
+                DateHired = e.DateHired,
+                LinkedUser = string.IsNullOrEmpty(e.Username) ? "No" : e.Username
+            });
+        }
+
+        public async Task RestoreAsync(string dni)
+        {
+            var employee = await _employeeRepository.GetByIdAsync(dni);
+
+            if (employee == null) throw new InvalidOperationException("Empleado no encontrado.");
+
+            employee.IsActive = true;
+
+            _employeeRepository.Update(employee);
+            await _auditLogService.LogAsync("EMPLEADO Recuperado", $"DNI: {employee.Dni}");
             await _unitOfWork.SaveChangesAsync();
         }
     }

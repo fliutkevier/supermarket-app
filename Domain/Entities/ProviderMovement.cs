@@ -16,10 +16,11 @@ namespace Domain.Entities
         public decimal Total { get; set; }
         public DateOnly Date { get; set; }
         public string UrlPhoto { get; set; }
-        
+        public bool IsActive { get; set; }
         public string ProviderCUIT { get; set; }
 
         [ForeignKey("ProviderCUIT")]
         public virtual Provider Provider { get; set; }
+
     }
 }

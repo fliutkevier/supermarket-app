@@ -108,16 +108,16 @@
             txtName.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtName, 2);
             txtName.CueHint.CueHintText = "Nombre *";
-            txtName.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtName.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtName.CueHint.Padding = new Padding(0);
             txtName.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtName.Location = new Point(3, 70);
             txtName.Name = "txtName";
             txtName.Size = new Size(260, 27);
-            txtName.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtName.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtName.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtName.StateCommon.Border.Width = 2;
-            txtName.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtName.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtName.TabIndex = 0;
             txtName.TextAlign = HorizontalAlignment.Center;
             // 
@@ -126,16 +126,16 @@
             txtDni.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtDni, 2);
             txtDni.CueHint.CueHintText = "DNI *";
-            txtDni.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtDni.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtDni.CueHint.Padding = new Padding(0);
             txtDni.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtDni.Location = new Point(269, 70);
             txtDni.Name = "txtDni";
             txtDni.Size = new Size(260, 27);
-            txtDni.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtDni.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtDni.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtDni.StateCommon.Border.Width = 2;
-            txtDni.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtDni.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtDni.TabIndex = 2;
             txtDni.TextAlign = HorizontalAlignment.Center;
             // 
@@ -144,16 +144,16 @@
             txtEmail.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtEmail, 2);
             txtEmail.CueHint.CueHintText = "Email";
-            txtEmail.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtEmail.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtEmail.CueHint.Padding = new Padding(0);
             txtEmail.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtEmail.Location = new Point(535, 70);
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(262, 27);
-            txtEmail.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtEmail.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtEmail.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtEmail.StateCommon.Border.Width = 2;
-            txtEmail.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtEmail.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtEmail.TabIndex = 4;
             txtEmail.TextAlign = HorizontalAlignment.Center;
             // 
@@ -162,16 +162,16 @@
             txtLastName.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtLastName, 2);
             txtLastName.CueHint.CueHintText = "Apellido *";
-            txtLastName.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtLastName.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtLastName.CueHint.Padding = new Padding(0);
             txtLastName.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtLastName.Location = new Point(3, 126);
             txtLastName.Name = "txtLastName";
             txtLastName.Size = new Size(260, 27);
-            txtLastName.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtLastName.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtLastName.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtLastName.StateCommon.Border.Width = 2;
-            txtLastName.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtLastName.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtLastName.TabIndex = 1;
             txtLastName.TextAlign = HorizontalAlignment.Center;
             // 
@@ -179,17 +179,17 @@
             // 
             txtCuit.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtCuit, 2);
-            txtCuit.CueHint.CueHintText = "CUIT";
-            txtCuit.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCuit.CueHint.CueHintText = "CUIT *";
+            txtCuit.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtCuit.CueHint.Padding = new Padding(0);
             txtCuit.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtCuit.Location = new Point(269, 126);
             txtCuit.Name = "txtCuit";
             txtCuit.Size = new Size(260, 27);
-            txtCuit.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCuit.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtCuit.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtCuit.StateCommon.Border.Width = 2;
-            txtCuit.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCuit.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtCuit.TabIndex = 3;
             txtCuit.TextAlign = HorizontalAlignment.Center;
             // 
@@ -198,16 +198,16 @@
             txtPhone.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtPhone, 2);
             txtPhone.CueHint.CueHintText = "Telefono";
-            txtPhone.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPhone.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtPhone.CueHint.Padding = new Padding(0);
             txtPhone.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtPhone.Location = new Point(535, 126);
             txtPhone.Name = "txtPhone";
             txtPhone.Size = new Size(262, 27);
-            txtPhone.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPhone.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtPhone.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtPhone.StateCommon.Border.Width = 2;
-            txtPhone.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPhone.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtPhone.TabIndex = 5;
             txtPhone.TextAlign = HorizontalAlignment.Center;
             // 
@@ -216,16 +216,16 @@
             txtAddress.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtAddress, 2);
             txtAddress.CueHint.CueHintText = "Dirección";
-            txtAddress.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtAddress.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtAddress.CueHint.Padding = new Padding(0);
             txtAddress.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtAddress.Location = new Point(535, 182);
             txtAddress.Name = "txtAddress";
             txtAddress.Size = new Size(262, 27);
-            txtAddress.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtAddress.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtAddress.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtAddress.StateCommon.Border.Width = 2;
-            txtAddress.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtAddress.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtAddress.TabIndex = 6;
             txtAddress.TextAlign = HorizontalAlignment.Center;
             // 
@@ -262,16 +262,16 @@
             txtUsername.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtUsername, 2);
             txtUsername.CueHint.CueHintText = "Usuario";
-            txtUsername.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtUsername.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtUsername.CueHint.Padding = new Padding(0);
             txtUsername.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtUsername.Location = new Point(53, 238);
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(160, 27);
-            txtUsername.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtUsername.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtUsername.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtUsername.StateCommon.Border.Width = 2;
-            txtUsername.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtUsername.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtUsername.TabIndex = 8;
             txtUsername.TextAlign = HorizontalAlignment.Center;
             txtUsername.Visible = false;
@@ -281,16 +281,16 @@
             txtPassword.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(txtPassword, 2);
             txtPassword.CueHint.CueHintText = "Contraseña";
-            txtPassword.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPassword.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtPassword.CueHint.Padding = new Padding(0);
             txtPassword.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtPassword.Location = new Point(51, 294);
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(164, 27);
-            txtPassword.StateActive.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPassword.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtPassword.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtPassword.StateCommon.Border.Width = 2;
-            txtPassword.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtPassword.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtPassword.TabIndex = 9;
             txtPassword.TextAlign = HorizontalAlignment.Center;
             txtPassword.Visible = false;
@@ -311,9 +311,11 @@
             // 
             dtpBirthDay.Anchor = AnchorStyles.None;
             dtpBirthDay.Format = DateTimePickerFormat.Short;
-            dtpBirthDay.Location = new Point(688, 241);
+            dtpBirthDay.Location = new Point(678, 240);
             dtpBirthDay.Name = "dtpBirthDay";
-            dtpBirthDay.Size = new Size(89, 21);
+            dtpBirthDay.Size = new Size(109, 23);
+            dtpBirthDay.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold);
+            dtpBirthDay.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold);
             dtpBirthDay.TabIndex = 10;
             // 
             // lblBirthDay
@@ -357,9 +359,12 @@
             // 
             dtpHiredDate.Anchor = AnchorStyles.None;
             tlpEmployees.SetColumnSpan(dtpHiredDate, 2);
-            dtpHiredDate.Location = new Point(560, 353);
+            dtpHiredDate.Format = DateTimePickerFormat.Short;
+            dtpHiredDate.Location = new Point(605, 352);
             dtpHiredDate.Name = "dtpHiredDate";
-            dtpHiredDate.Size = new Size(211, 21);
+            dtpHiredDate.Size = new Size(122, 23);
+            dtpHiredDate.StateActive.Content.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold);
+            dtpHiredDate.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold);
             dtpHiredDate.TabIndex = 12;
             dtpHiredDate.Visible = false;
             // 

@@ -1,4 +1,5 @@
-﻿using Application.Providers.Dtos;
+﻿using Application.AuditLogs.Interfaces;
+using Application.Providers.Dtos;
 using Application.Providers.Interfaces;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -14,11 +15,13 @@ namespace Application.Providers
     {
         private readonly IProviderRepository _providerRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuditLogService _auditLogService;
 
-        public ProviderService(IProviderRepository repository, IUnitOfWork unitOfWork)
+        public ProviderService(IProviderRepository repository, IUnitOfWork unitOfWork, IAuditLogService auditLogService)
         {
             _providerRepository = repository;
             _unitOfWork = unitOfWork;
+            _auditLogService = auditLogService;
         }
 
         public async Task CreateAsync(CreateProviderDto dto)
@@ -49,6 +52,7 @@ namespace Application.Providers
             };
 
             await _providerRepository.AddAsync(entity);
+            await _auditLogService.LogAsync("PROVEEDOR Creado", $"CUIT: {entity.CUIT}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -94,6 +98,7 @@ namespace Application.Providers
             provider.IsActive = false;
 
             _providerRepository.Update(provider);
+            await _auditLogService.LogAsync("PROVEEDOR Dado de baja", $"CUIT: {provider.CUIT}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -120,6 +125,34 @@ namespace Application.Providers
             provider.IsActive = dto.IsActive;
 
             _providerRepository.Update(provider);
+            await _auditLogService.LogAsync("PROVEEDOR Modificado", $"CUIT: {provider.CUIT}");
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ProviderGridDto>> GetDeletedAsync()
+        {
+            var providers = await _providerRepository.GetAsync(pm => !pm.IsActive);
+
+            return providers.Select(p => new ProviderGridDto
+            {
+                Cuit = p.CUIT,
+                Name = p.Name,
+                Email = p.Email,
+                Phone = p.Phone,
+                DateAdded = p.DateAdded
+            });
+        }
+
+        public async Task RestoreAsync(string cuit)
+        {
+            var p = await _providerRepository.GetByIdAsync(cuit);
+
+            if (p == null) throw new InvalidOperationException("Proveedor no encontrado.");
+
+            p.IsActive = true;
+
+            _providerRepository.Update(p);
+            await _auditLogService.LogAsync("PROVEEDOR Restaurado", $"CUIT: {p.CUIT}");
             await _unitOfWork.SaveChangesAsync();
         }
     }

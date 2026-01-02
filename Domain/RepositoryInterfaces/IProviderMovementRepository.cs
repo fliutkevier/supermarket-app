@@ -9,5 +9,6 @@ namespace Domain.RepositoryInterfaces
 {
     public interface IProviderMovementRepository : IRepository<ProviderMovement>
     {
+        Task<IEnumerable<ProviderMovement>> GetAllWithProviderAsync(DateOnly? from = null, DateOnly? to = null, string? providerCuit = null);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Products.Dtos;
+﻿using Application.Products;
+using Application.Products.Dtos;
 using Application.Products.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using WinForms.PopUps;
 
 namespace WinForms
@@ -20,12 +22,15 @@ namespace WinForms
         private readonly IServiceProvider _serviceProvider;
         private const string CODIGO_VARIOS = "VARIOS";
         private List<ProductGridDto> _productsLoaded = new List<ProductGridDto>();
+        private readonly ILabelQueueService _labelQueueService;
         public UserControlProducts(IProductService productService,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ILabelQueueService labelQueueService)
         {
             InitializeComponent();
             _productService = productService;
             _serviceProvider = serviceProvider;
+            _labelQueueService = labelQueueService;
         }
 
         private void UserControlProducts_Load(object sender, EventArgs e)
@@ -130,11 +135,6 @@ namespace WinForms
             dgvProducts.Columns["LastStockUpdate"].DefaultCellStyle.Format = "g"; // Formato fecha corta + hora
         }
 
-        private void btnAddStock_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (dgvProducts.CurrentRow == null) return;
@@ -192,7 +192,7 @@ namespace WinForms
         {
             ApplyFilters();
         }
-        
+
         private void btnResetFilters_Click(object sender, EventArgs e)
         {
             txtFilter.Text = "";
@@ -208,5 +208,72 @@ namespace WinForms
         private void rbtMinStock_CheckedChanged(object sender, EventArgs e) { if (rbtMinStock.Checked) ApplyFilters(); }
 
         private void rbtMaxStock_CheckedChanged(object sender, EventArgs e) { if (rbtMaxStock.Checked) ApplyFilters(); }
+
+        private async void btn0Stock_Click(object sender, EventArgs e)
+        {
+            if (dgvProducts.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione un producto para eliminar su stock.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string code = dgvProducts.CurrentRow.Cells["Code"].Value.ToString();
+            string name = dgvProducts.CurrentRow.Cells["Name"].Value.ToString();
+
+            var confirmResult = MessageBox.Show(
+                $"¿Está seguro que desea eliminar el stock del producto '{name}'?",
+                "Confirmar Eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                try
+                {
+                    var product = await _productService.GetProductForEditAsync(code);
+
+                    var productoForEdit = new UpdateProductDto
+                    {
+                        Code = product.Code,
+                        Name = product.Name,
+                        SalePrice = product.SalePrice,
+                        CostPrice = product.CostPrice,
+                        Stock = 0,
+                        IsActive = true
+                    };
+
+                    await _productService.UpdateProductAsync(productoForEdit);
+
+                    MessageBox.Show("Stock eliminado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    LoadGrid();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al eliminar el stock: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnAddToQueue_Click(object sender, EventArgs e)
+        {
+            if (dgvProducts.CurrentRow?.DataBoundItem is ProductGridDto product)
+            {
+                var label = new ProductLabelDto
+                {
+                    ProductCode = product.Code,
+                    PrintName = product.Name,
+                    Price = product.SalePrice
+                };
+
+                _labelQueueService.AddToQueue(label);
+            }
+        }
+
+        private void btnShowQueue_Click(object sender, EventArgs e)
+        {
+            var formLabels = _serviceProvider.GetRequiredService<FormPrintLabels>();
+            formLabels.ShowDialog();
+        }
     }
 }

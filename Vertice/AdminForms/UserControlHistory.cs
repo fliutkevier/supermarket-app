@@ -2,12 +2,15 @@
 using Application.Sales.Interfaces;
 using Application.Sessions.Dtos;
 using Application.Sessions.Interfaces;
+using Application.Users.Dtos;
 using Application.Users.Interfaces;
+using Domain.RepositoryInterfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,20 +26,23 @@ namespace WinForms
         private readonly ISaleService _saleService;
         private readonly IUserService _userService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IUserSessionService _userSessionService;
 
         private List<SessionGridDto> _sessionsLoaded = new List<SessionGridDto>();
 
         public UserControlHistory(
             ISessionService sessionService,
             ISaleService saleService,
-            IUserService userService, // <-- Inyectamos
-            IServiceProvider serviceProvider)
+            IUserService userService,
+            IServiceProvider serviceProvider,
+            IUserSessionService userSessionService)
         {
             InitializeComponent();
             _sessionService = sessionService;
             _saleService = saleService;
             _userService = userService;
             _serviceProvider = serviceProvider;
+            _userSessionService = userSessionService;
         }
 
         private async void UserControlHistory_Load(object sender, EventArgs e)
@@ -62,16 +68,34 @@ namespace WinForms
         {
             try
             {
-                var users = await _userService.GetAllAsync();
 
-                // Creamos una lista temporal para agregar la opción "TODOS"
-                var userList = users.Select(u => new { u.Username, Display = u.Username }).ToList();
-                userList.Insert(0, new { Username = "ALL", Display = "TODOS LOS USUARIOS" });
+                var role = _userSessionService.Role.ToString();
+                var username = _userSessionService.Username;
+                object dataSource;
 
-                cbxUsersFilter.DataSource = userList;
+                if (role == "A")
+                {
+                    var users = await _userService.GetAllAsync();
+                    var userList = users.Select(u => new { u.Username, Display = u.Username }).ToList();
+                    userList.Insert(0, new { Username = "ALL", Display = "TODOS LOS USUARIOS" });
+                    cbxUsersFilter.Enabled = true;
+                    dataSource = userList;
+                }
+                else
+                {
+                    var userList = new[]
+                    {
+                        new { Username = username, Display = username }
+                    }.ToList();
+
+                    dataSource = userList;
+                    cbxUsersFilter.Enabled = false;
+                }
+
+                cbxUsersFilter.DataSource = dataSource;
                 cbxUsersFilter.DisplayMember = "Display";
                 cbxUsersFilter.ValueMember = "Username";
-                cbxUsersFilter.SelectedIndex = 0; // Seleccionar TODOS
+                cbxUsersFilter.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -91,6 +115,15 @@ namespace WinForms
             if (dgvSales.Columns["Id"] != null)
             {
                 dgvSales.Columns["Id"].HeaderText = "Nro. Venta";
+            }
+
+            if (dgvSales.Columns["Fiscal"] == null)
+            {
+                var col = new DataGridViewCheckBoxColumn();
+                col.Name = "Fiscal";
+                col.HeaderText = "Fiscal";
+                col.DataPropertyName = "Fiscal";
+                col.ReadOnly = true;
             }
 
             if (dgvSales.Columns["Date"] != null)
@@ -238,6 +271,7 @@ namespace WinForms
             // Resetear combo y radios
             if (cbxUsersFilter.Items.Count > 0) cbxUsersFilter.SelectedIndex = 0;
             if (rbtDesDate != null) rbtDesDate.Checked = true;
+            lblTotals.Text = "";
 
             await LoadSessions(null, null);
         }
@@ -278,6 +312,75 @@ namespace WinForms
             var formDetalle = _serviceProvider.GetRequiredService<FormSaleDetail>();
             formDetalle.LoadData(venta.Id);
             formDetalle.ShowDialog();
+        }
+
+        private void btnGenerateTotals_Click(object sender, EventArgs e)
+        {
+            // Verificamos si la grilla tiene datos
+            if (dgvSessions.DataSource == null || dgvSessions.Rows.Count == 0)
+            {
+                MessageBox.Show("No hay datos visibles para sumar.", "Información");
+                return;
+            }
+
+            // Casteamos el DataSource a la lista de objetos que usamos (SessionGridDto)
+            // Esto es mucho más rápido que recorrer las filas celda por celda
+            if (dgvSessions.DataSource is List<SessionGridDto> listaVisible)
+            {
+                decimal totalAcumulado = listaVisible.Sum(x => x.Total);
+
+                // Mostramos el resultado
+                MessageBox.Show(
+                    $"Total acumulado de las {listaVisible.Count} cajas:\n\n" +
+                    $"{totalAcumulado.ToString("C2")}",
+                    "Cálculo Rápido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                lblTotals.Text = $"TOTALES: {totalAcumulado.ToString("C2")}";
+            }
+        }
+
+        private void btnSumSellTotals_Click(object sender, EventArgs e)
+        {
+            if (dgvSales.DataSource is List<SaleGridDto> ventas && ventas.Count > 0)
+            {
+                int cantidad = ventas.Count;
+                decimal total = ventas.Sum(x => x.Total);
+
+                MessageBox.Show(
+                    $"• Cantidad de Ventas: {cantidad}\n" +
+                    $"• Total: {total.ToString("C2")}",
+                    "Total General",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("No hay ventas para sumar.", "Atención");
+            }
+        }
+
+        private void btnSumFacts_Click(object sender, EventArgs e)
+        {
+            if (dgvSales.DataSource is List<SaleGridDto> ventas && ventas.Count > 0)
+            {
+                var ventasFiscales = ventas.Where(x => x.Fiscal).ToList();
+
+                int cantidad = ventasFiscales.Count;
+                decimal total = ventasFiscales.Sum(x => x.Total);
+
+                MessageBox.Show(
+                    $"• Cantidad Facturada: {cantidad}\n" +
+                    $"• Total: {total.ToString("C2")}",
+                    "Resumen Fiscal",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("No hay ventas para sumar.", "Atención");
+            }
         }
     }
 }

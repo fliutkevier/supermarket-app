@@ -1,4 +1,5 @@
-﻿using Application.Users.Dtos;
+﻿using Application.AuditLogs.Interfaces;
+using Application.Users.Dtos;
 using Application.Users.Interfaces;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -15,15 +16,18 @@ namespace Application.Users
         private readonly IUserRepository _userRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuditLogService _auditLogService;
 
         public UserService(
             IUserRepository userRepository,
             IEmployeeRepository employeeRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IAuditLogService auditLogService)
         {
             _userRepository = userRepository;
             _employeeRepository = employeeRepository;
             _unitOfWork = unitOfWork;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IEnumerable<UserGridDto>> GetAllAsync()
@@ -81,7 +85,7 @@ namespace Application.Users
             };
 
             await _userRepository.AddAsync(newUser);
-
+            await _auditLogService.LogAsync("USUARIO Creado", $"Usuario: {dto.Username}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -93,6 +97,7 @@ namespace Application.Users
             user.IsActive = false;
 
             _userRepository.Update(user);
+            await _auditLogService.LogAsync("Usuario dado de baja", $"Usuario: {username}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -104,6 +109,31 @@ namespace Application.Users
             user.Password = newPassword;
 
             _userRepository.Update(user);
+            await _auditLogService.LogAsync("USUARIO Contraseña Modificada", $"Usuario: {username}");
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<UserGridDto>> GetDeletedAsync()
+        {
+            var users = await _userRepository.GetAsync(u => !u.IsActive);
+
+            return users.Select(u => new UserGridDto
+            {
+                Username = u.Username,
+                Role = u.Role == 'A' ? "Administrador" : "Empleado",
+            });
+        }
+
+        public async Task RestoreAsync(string username)
+        {
+            var u = await _userRepository.GetByIdAsync(username);
+
+            if (u == null) throw new InvalidOperationException("Usuario no encontrado.");
+
+            u.IsActive = true;
+
+            _userRepository.Update(u);
+            await _auditLogService.LogAsync("USUARIO Restaurado", $"Usuario: {u.Username}");
             await _unitOfWork.SaveChangesAsync();
         }
     }

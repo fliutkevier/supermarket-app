@@ -28,19 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             tlpProducts = new TableLayoutPanel();
             lblTitle = new Krypton.Toolkit.KryptonLabel();
             dgvProducts = new DataGridView();
             txtFilter = new Krypton.Toolkit.KryptonTextBox();
-            btnResetFilters = new Krypton.Toolkit.KryptonButton();
             btnAdd = new Krypton.Toolkit.KryptonButton();
-            btnAddStock = new Krypton.Toolkit.KryptonButton();
-            btn0Stock = new Krypton.Toolkit.KryptonButton();
-            btnDelete = new Krypton.Toolkit.KryptonButton();
             btnUpdate = new Krypton.Toolkit.KryptonButton();
             gbxFilters = new GroupBox();
             tlpFilters = new TableLayoutPanel();
@@ -48,6 +44,11 @@
             rbtDesDate = new Krypton.Toolkit.KryptonRadioButton();
             rbtDesName = new Krypton.Toolkit.KryptonRadioButton();
             rbtMinStock = new Krypton.Toolkit.KryptonRadioButton();
+            btnResetFilters = new Krypton.Toolkit.KryptonButton();
+            btnDelete = new Krypton.Toolkit.KryptonButton();
+            btn0Stock = new Krypton.Toolkit.KryptonButton();
+            btnAddToQueue = new Krypton.Toolkit.KryptonButton();
+            btnShowQueue = new Krypton.Toolkit.KryptonButton();
             tlpProducts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvProducts).BeginInit();
             gbxFilters.SuspendLayout();
@@ -70,12 +71,13 @@
             tlpProducts.Controls.Add(dgvProducts, 1, 2);
             tlpProducts.Controls.Add(txtFilter, 1, 1);
             tlpProducts.Controls.Add(btnAdd, 3, 1);
-            tlpProducts.Controls.Add(btnAddStock, 3, 0);
-            tlpProducts.Controls.Add(btn0Stock, 4, 0);
-            tlpProducts.Controls.Add(btnDelete, 5, 1);
             tlpProducts.Controls.Add(btnUpdate, 4, 1);
             tlpProducts.Controls.Add(gbxFilters, 8, 3);
             tlpProducts.Controls.Add(btnResetFilters, 8, 4);
+            tlpProducts.Controls.Add(btnDelete, 3, 0);
+            tlpProducts.Controls.Add(btn0Stock, 4, 0);
+            tlpProducts.Controls.Add(btnAddToQueue, 5, 0);
+            tlpProducts.Controls.Add(btnShowQueue, 5, 1);
             tlpProducts.Dock = DockStyle.Fill;
             tlpProducts.Location = new Point(0, 0);
             tlpProducts.Name = "tlpProducts";
@@ -108,29 +110,29 @@
             // 
             // dgvProducts
             // 
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(238, 239, 249);
-            dgvProducts.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(238, 239, 249);
+            dgvProducts.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvProducts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProducts.BorderStyle = BorderStyle.None;
             dgvProducts.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(20, 25, 70);
-            dataGridViewCellStyle6.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = Color.WhiteSmoke;
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(20, 25, 70);
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dgvProducts.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(20, 25, 70);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.WhiteSmoke;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(20, 25, 70);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvProducts.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvProducts.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             tlpProducts.SetColumnSpan(dgvProducts, 7);
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Window;
-            dataGridViewCellStyle7.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle7.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle7.SelectionBackColor = Color.ForestGreen;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.False;
-            dgvProducts.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.ForestGreen;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvProducts.DefaultCellStyle = dataGridViewCellStyle3;
             dgvProducts.Dock = DockStyle.Fill;
             dgvProducts.EnableHeadersVisualStyles = false;
             dgvProducts.Location = new Point(17, 111);
@@ -138,9 +140,9 @@
             dgvProducts.Name = "dgvProducts";
             dgvProducts.ReadOnly = true;
             dgvProducts.RowHeadersVisible = false;
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dgvProducts.RowsDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dgvProducts.RowsDefaultCellStyle = dataGridViewCellStyle4;
             tlpProducts.SetRowSpan(dgvProducts, 9);
             dgvProducts.RowTemplate.Height = 35;
             dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -159,17 +161,6 @@
             txtFilter.TabIndex = 9;
             txtFilter.TextChanged += txtFilter_TextChanged;
             // 
-            // btnResetFilters
-            // 
-            btnResetFilters.Anchor = AnchorStyles.None;
-            btnResetFilters.Location = new Point(1101, 362);
-            btnResetFilters.Name = "btnResetFilters";
-            btnResetFilters.Size = new Size(127, 40);
-            btnResetFilters.TabIndex = 24;
-            btnResetFilters.Values.DropDownArrowColor = Color.Empty;
-            btnResetFilters.Values.Text = "Reiniciar Filtros";
-            btnResetFilters.Click += btnResetFilters_Click;
-            // 
             // btnAdd
             // 
             btnAdd.Anchor = AnchorStyles.None;
@@ -180,38 +171,6 @@
             btnAdd.Values.DropDownArrowColor = Color.Empty;
             btnAdd.Values.Text = "Nuevo Producto";
             btnAdd.Click += btnAdd_Click;
-            // 
-            // btnAddStock
-            // 
-            btnAddStock.Anchor = AnchorStyles.None;
-            btnAddStock.Location = new Point(429, 7);
-            btnAddStock.Name = "btnAddStock";
-            btnAddStock.Size = new Size(127, 40);
-            btnAddStock.TabIndex = 16;
-            btnAddStock.Values.DropDownArrowColor = Color.Empty;
-            btnAddStock.Values.Text = "Agregar Stock";
-            btnAddStock.Click += btnAddStock_Click;
-            // 
-            // btn0Stock
-            // 
-            btn0Stock.Anchor = AnchorStyles.None;
-            btn0Stock.Location = new Point(570, 7);
-            btn0Stock.Name = "btn0Stock";
-            btn0Stock.Size = new Size(127, 40);
-            btn0Stock.TabIndex = 17;
-            btn0Stock.Values.DropDownArrowColor = Color.Empty;
-            btn0Stock.Values.Text = "Borrar Stock";
-            // 
-            // btnDelete
-            // 
-            btnDelete.Anchor = AnchorStyles.None;
-            btnDelete.Location = new Point(713, 61);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(123, 40);
-            btnDelete.TabIndex = 18;
-            btnDelete.Values.DropDownArrowColor = Color.Empty;
-            btnDelete.Values.Text = "Eliminar Producto";
-            btnDelete.Click += btnDelete_Click;
             // 
             // btnUpdate
             // 
@@ -294,6 +253,67 @@
             rbtMinStock.Values.Text = "Ordenar por Menor Stock";
             rbtMinStock.CheckedChanged += rbtMinStock_CheckedChanged;
             // 
+            // btnResetFilters
+            // 
+            btnResetFilters.Anchor = AnchorStyles.None;
+            btnResetFilters.Location = new Point(1101, 362);
+            btnResetFilters.Name = "btnResetFilters";
+            btnResetFilters.Size = new Size(127, 40);
+            btnResetFilters.TabIndex = 24;
+            btnResetFilters.Values.DropDownArrowColor = Color.Empty;
+            btnResetFilters.Values.Text = "Reiniciar Filtros";
+            btnResetFilters.Click += btnResetFilters_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Anchor = AnchorStyles.None;
+            btnDelete.Location = new Point(431, 7);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(123, 40);
+            btnDelete.TabIndex = 18;
+            btnDelete.Values.DropDownArrowColor = Color.Empty;
+            btnDelete.Values.Text = "Eliminar Producto";
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btn0Stock
+            // 
+            btn0Stock.Anchor = AnchorStyles.None;
+            btn0Stock.Location = new Point(570, 7);
+            btn0Stock.Name = "btn0Stock";
+            btn0Stock.Size = new Size(127, 40);
+            btn0Stock.TabIndex = 17;
+            btn0Stock.Values.DropDownArrowColor = Color.Empty;
+            btn0Stock.Values.Text = "Borrar Stock";
+            btn0Stock.Click += btn0Stock_Click;
+            // 
+            // btnAddToQueue
+            // 
+            btnAddToQueue.Anchor = AnchorStyles.None;
+            tlpProducts.SetColumnSpan(btnAddToQueue, 2);
+            btnAddToQueue.Location = new Point(735, 7);
+            btnAddToQueue.Name = "btnAddToQueue";
+            btnAddToQueue.Size = new Size(219, 40);
+            btnAddToQueue.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnAddToQueue.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAddToQueue.TabIndex = 29;
+            btnAddToQueue.Values.DropDownArrowColor = Color.Empty;
+            btnAddToQueue.Values.Text = "AGREGAR A IMPRESIÓN";
+            btnAddToQueue.Click += btnAddToQueue_Click;
+            // 
+            // btnShowQueue
+            // 
+            btnShowQueue.Anchor = AnchorStyles.None;
+            tlpProducts.SetColumnSpan(btnShowQueue, 2);
+            btnShowQueue.Location = new Point(735, 61);
+            btnShowQueue.Name = "btnShowQueue";
+            btnShowQueue.Size = new Size(219, 40);
+            btnShowQueue.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnShowQueue.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnShowQueue.TabIndex = 30;
+            btnShowQueue.Values.DropDownArrowColor = Color.Empty;
+            btnShowQueue.Values.Text = "VER PARA IMPRIMIR";
+            btnShowQueue.Click += btnShowQueue_Click;
+            // 
             // UserControlProducts
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -317,7 +337,6 @@
         private Krypton.Toolkit.KryptonLabel lblTitle;
         private DataGridView dgvProducts;
         private Krypton.Toolkit.KryptonTextBox txtFilter;
-        private Krypton.Toolkit.KryptonButton btnAddStock;
         private Krypton.Toolkit.KryptonButton btn0Stock;
         private Krypton.Toolkit.KryptonButton btnAdd;
         private Krypton.Toolkit.KryptonButton btnDelete;
@@ -329,5 +348,7 @@
         private TableLayoutPanel tlpFilters;
         private Krypton.Toolkit.KryptonRadioButton rbtDesDate;
         private Krypton.Toolkit.KryptonRadioButton rbtDesName;
+        private Krypton.Toolkit.KryptonButton btnAddToQueue;
+        private Krypton.Toolkit.KryptonButton btnShowQueue;
     }
 }

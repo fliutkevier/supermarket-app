@@ -1,4 +1,5 @@
-﻿using Application.Sales.Dtos;
+﻿using Application.AuditLogs.Interfaces;
+using Application.Sales.Dtos;
 using Application.Sales.Interfaces;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -21,6 +22,7 @@ namespace Application.Sales
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFiscalService _fiscalService;
         private readonly IRepository<FiscalDocument> _fiscalDocRepository; // Repositorio genérico para guardar el CAE
+        private readonly IAuditLogService _auditLogService;
 
         public SaleService(
             ISaleRepository saleRepository,
@@ -31,7 +33,8 @@ namespace Application.Sales
             IPaymentMethodRepository paymentMethodRepository,
             IUnitOfWork unitOfWork,
             IFiscalService fiscalService,
-            IRepository<FiscalDocument> fiscalDocRepository)
+            IRepository<FiscalDocument> fiscalDocRepository,
+            IAuditLogService auditLogService)
         {
             _saleRepository = saleRepository;
             _saleDetailRepository = saleDetailRepository;
@@ -42,6 +45,7 @@ namespace Application.Sales
             _unitOfWork = unitOfWork;
             _fiscalService = fiscalService;
             _fiscalDocRepository = fiscalDocRepository;
+            _auditLogService = auditLogService;
         }
 
         public async Task<SaleResultDto> CreateSaleAsync(CreateSaleDto dto)
@@ -118,6 +122,8 @@ namespace Application.Sales
 
             await _saleRepository.AddAsync(newSale);
             await _unitOfWork.SaveChangesAsync();
+            await _auditLogService.LogAsync("VENTA Creada", $"Número: {newSale.Id}");
+            await _unitOfWork.SaveChangesAsync();
 
             FiscalDocument? fiscalDoc = null;
 
@@ -141,6 +147,7 @@ namespace Application.Sales
 
                     // Guardar el CAE
                     await _fiscalDocRepository.AddAsync(fiscalDoc);
+                    await _auditLogService.LogAsync("FISCAL VENTA Creada", $"Número: {newSale.Id}");
                     await _unitOfWork.SaveChangesAsync();
 
                     // (Opcional) Capturar datos para devolver en el DTO si querés mostrarlos
@@ -200,10 +207,39 @@ namespace Application.Sales
 
         public async Task<IEnumerable<SaleGridDto>> GetSalesBySessionAsync(int sessionId)
         {
-            var sales = await _saleRepository.GetSalesBySessionIdAsync(sessionId);
-            return MapToGridDto(sales);
-        }
+            //var sales = await _saleRepository.GetSalesBySessionIdAsync(sessionId);
+            //return MapToGridDto(sales);
 
+            //ventas de la sesión
+            var sales = await _saleRepository.GetSalesBySessionIdAsync(sessionId);
+
+            //vacío
+            if (!sales.Any()) return new List<SaleGridDto>();
+
+            //IDs de ventas para consultar si tienen factura
+            var saleIds = sales.Select(s => s.Id).ToList();
+
+            //cuáles de esos IDs existen
+            var fiscalDocs = await _fiscalDocRepository.GetAsync(x => saleIds.Contains(x.SaleId));
+
+            //búsqueda rápida en memoria
+            var fiscalSaleIds = fiscalDocs.Select(x => x.SaleId).ToHashSet();
+
+            //manualmente para inyectar el valor de IsFiscal
+            return sales.Select(s => new SaleGridDto
+            {
+                Id = s.Id,
+                Date = s.DateAndTime,
+                Total = s.Total,
+                PaymentMethod = s.PaymentMethod?.Name ?? "Desconocido",
+                ItemCount = s.SaleDetails.Sum(d => d.Quantity),
+                User = s.Session?.Username ?? "Desconocido",
+
+                // Si el ID de la venta está en la lista de fiscales, es True.
+                Fiscal = fiscalSaleIds.Contains(s.Id)
+            });
+        }
+        /*
         private IEnumerable<SaleGridDto> MapToGridDto(IEnumerable<Sale> sales)
         {
             return sales.Select(s => new SaleGridDto
@@ -217,7 +253,7 @@ namespace Application.Sales
 
                 User = s.Session?.Username ?? "Desconocido"
             });
-        }
+        }*/
 
         public async Task<SaleGridDto?> GetSaleHeaderAsync(int saleId)
         {

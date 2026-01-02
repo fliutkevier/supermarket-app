@@ -1,9 +1,13 @@
+using Application.AuditLogs;
+using Application.AuditLogs.Interfaces;
 using Application.Employees;
 using Application.Employees.Interfaces;
 using Application.PaymentMethods;
 using Application.PaymentMethods.Interfaces;
 using Application.Products;
 using Application.Products.Interfaces;
+using Application.ProviderMovements;
+using Application.ProviderMovements.Interfaces;
 using Application.Providers;
 using Application.Providers.Interfaces;
 using Application.Sales;
@@ -24,6 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WinForms;
 using WinForms.AdminForms;
+using WinForms.Helpers;
 using WinForms.PopUps;
 
 namespace Vertice
@@ -133,10 +138,6 @@ namespace Vertice
             {
                 string connectionString;
                 
-                //DEV
-                //connectionString = context.Configuration.GetConnectionString("DefaultConnection")!;
-
-                
                 //PROD
                 //Definimos la ruta en ProgramData (para que los datos sobrevivan si desinstalas el exe)
                 string appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "VerticeApp");
@@ -151,10 +152,9 @@ namespace Vertice
                 //El "AttachDbFileName" es lo que hace que use el archivo en ProgramData.
                 connectionString = $"Server=.\\SQLEXPRESS;Database=VerticeDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;AttachDbFileName={dbFilePath}";
                 
-                //========================
 
                 //DEVELOPMENT
-                //var connectionString = context.Configuration.GetConnectionString("DefaultConnection")!;
+                //connectionString = context.Configuration.GetConnectionString("DefaultConnection")!;
 
                 // Inyectam DbContext
                 services.AddDbContext<AppDbContext>(options =>
@@ -172,6 +172,7 @@ namespace Vertice
                 services.AddTransient<UserControlProvidersHistory>();
                 services.AddTransient<UserControlPaymentMethods>();
                 services.AddTransient<UserControlUsers>();
+                services.AddTransient<UserControlSettings>();
 
                 services.AddTransient<FormEmployeeEditor>();
                 services.AddTransient<FormPaymentMethodEditor>();
@@ -179,6 +180,11 @@ namespace Vertice
                 services.AddTransient<FormProviderEditor>();
                 services.AddTransient<FormUserEditor>();
                 services.AddTransient<FormSaleDetail>();
+                services.AddTransient<FormMovementDetails>();
+                services.AddTransient<FormMovementEditor>();
+                services.AddTransient<FormRecoverElements>();
+                services.AddTransient<FormPrintLabels>();
+                services.AddTransient<TicketPrinter>();
 
                 //DI Data
                 services.AddScoped<IAuditLogRepository, AuditLogRepository>();
@@ -193,6 +199,7 @@ namespace Vertice
                 services.AddScoped<IUserRepository, UserRepository>();
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
                 services.AddSingleton<IUserSessionService, UserSessionService>();
+                services.AddSingleton<ILabelQueueService, LabelQueueService>();
 
                 //DI App
                 services.AddScoped<IAuthService, AuthService>();
@@ -205,6 +212,8 @@ namespace Vertice
                 services.AddScoped<IFiscalService, FiscalServiceAfipSDK>();
                 services.AddScoped<IRepository<FiscalDocument>, SqlRepository<FiscalDocument>>();
                 services.AddScoped<IUserService, UserService>();
+                services.AddScoped<IProviderMovementService, ProviderMovementService>();
+                services.AddScoped<IAuditLogService, AuditLogService>();
             });
     }
 }

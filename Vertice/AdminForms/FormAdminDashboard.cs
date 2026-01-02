@@ -1,4 +1,5 @@
-﻿using Application.Sessions.Interfaces;
+﻿using Application.Sessions;
+using Application.Sessions.Interfaces;
 using Domain.RepositoryInterfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,22 +18,63 @@ namespace WinForms.AdminForms
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserSessionService _userSessionService;
-        private readonly ISessionService _sessionService;
+        //private readonly ISessionService _sessionService;
 
         private Control? _activeControl;
+        private IServiceScope? _currentScope;
 
         public FormAdminDashboard(
             IServiceProvider serviceProvider,
-            IUserSessionService userSessionService,
-            ISessionService sessionService)
+            IUserSessionService userSessionService)
         {
             InitializeComponent();
             this.DoubleBuffered = true;
             _serviceProvider = serviceProvider;
             _userSessionService = userSessionService;
-            _sessionService = sessionService;
+            //_sessionService = sessionService;
 
             this.KeyPreview = true; //El form captura teclas antes que los controles
+        }
+
+        private void OpenScreen<T>() where T : Control
+        {
+            try
+            {
+                //Limpieza de la pantalla anterior
+                if (_activeControl != null)
+                {
+                    this.pnlContent.Controls.Remove(_activeControl);
+                    _activeControl.Dispose();
+                    _activeControl = null;
+                }
+
+                //Limpieza del Scope anterior
+                if (_currentScope != null)
+                {
+                    _currentScope.Dispose();
+                    _currentScope = null;
+                }
+
+                //Crear NUEVO Scope
+                _currentScope = _serviceProvider.CreateScope();
+
+                //Resolver el control dentro de este nuevo scope
+                T control = _currentScope.ServiceProvider.GetRequiredService<T>();
+
+                //Mostrar
+                this.pnlMenu.Visible = false;
+                ShowNavbar();
+
+                _activeControl = control;
+                control.Dock = DockStyle.Fill;
+                this.pnlContent.Controls.Add(control);
+                control.BringToFront();
+                control.Focus();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir pantalla: {ex.Message}");
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -86,6 +128,7 @@ namespace WinForms.AdminForms
             }
         }
 
+        /* OpenControl Viejo
         private void OpenControl(Control childControl)
         {
             this.pnlMenu.Visible = false;
@@ -101,7 +144,7 @@ namespace WinForms.AdminForms
             childControl.Dock = DockStyle.Fill;
             this.pnlContent.Controls.Add(childControl);
             childControl.BringToFront();
-        }
+        }*/
 
         private void ShowNavbar()
         {
@@ -139,47 +182,92 @@ namespace WinForms.AdminForms
             lblUsername.Text = username;
             lblUserFooter.Text = username;
 
+            ApplyRolPermissions();
+
             await VerifySessionState();
+        }
+
+        private void ApplyRolPermissions()
+        {
+            string rol = _userSessionService.Role?.ToString() ?? "E";
+
+            if (rol == "E")
+            {
+                if (btnLogsMenu != null)
+                {
+                    btnLogsMenu.Enabled = false;
+                    btnLogsMenu.Visible= false;
+                }
+
+                if (btnSettings != null)
+                {
+                    btnSettings.Enabled = false;
+                    btnSettings.Visible = false;
+                }
+
+                if (btnUsersMenu != null)
+                {
+                    btnUsersMenu.Enabled = false;
+                    btnUsersMenu.Visible = false;
+                }
+
+                if (btnPaymentMethodsMenu != null)
+                {
+                    btnPaymentMethodsMenu.Enabled = false;
+                    btnPaymentMethodsMenu.Visible = false;
+                }
+
+                if (btnEmployeesMenu != null)
+                {
+                    btnEmployeesMenu.Enabled = false;
+                    btnEmployeesMenu.Visible = false;
+                }
+            }
         }
 
         private async Task VerifySessionState()
         {
-            try
+            using (var scope = _serviceProvider.CreateScope())
             {
-                string username = _userSessionService.Username;
+                var sessionService = scope.ServiceProvider.GetRequiredService<ISessionService>();
 
-                // zombie session?
-                var currentSession = await _sessionService.GetCurrentSessionAsync(username);
-
-                if (currentSession != null)
+                try
                 {
-                    var fechaSesion = currentSession.Date;
-                    var fechaHoy = DateOnly.FromDateTime(DateTime.Now);
+                    string username = _userSessionService.Username;
 
-                    if (fechaSesion < fechaHoy)
+                    var currentSession = await sessionService.GetCurrentSessionAsync(username);
+
+                    if (currentSession != null)
                     {
-                        var result = MessageBox.Show(
-                            $"Tenés una caja abierta del día {fechaSesion} sin cerrar.\n¿Querés continuarla o cerrarla?\n\nSI: Continuar\nNO: Cerrar ahora",
-                            "Caja Pendiente",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question);
+                        var fechaSesion = currentSession.Date;
+                        var fechaHoy = DateOnly.FromDateTime(DateTime.Now);
 
-                        if (result == DialogResult.No)
+                        if (fechaSesion < fechaHoy)
                         {
-                            await _sessionService.CloseSessionAsync(username);
-                            MessageBox.Show("La caja anterior se cerró. Podés abrir una nueva.", "Caja Cerrada");
+                            var result = MessageBox.Show(
+                                $"Tenés una caja abierta del día {fechaSesion} sin cerrar.\n¿Querés continuarla o cerrarla?\n\nSI: Continuar\nNO: Cerrar ahora",
+                                "Caja Pendiente",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question);
+
+                            if (result == DialogResult.No)
+                            {
+                                await sessionService.CloseSessionAsync(username);
+                                MessageBox.Show("La caja anterior se cerró. Podés abrir una nueva.", "Caja Cerrada");
+                            }
                         }
                     }
-                }
 
-                await UpdateSessionButton();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al verificar estado de caja: " + ex.Message);
+                    bool isOpen = await sessionService.HasOpenSessionAsync(username);
+                    UpdateSessionButton(isOpen);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al verificar estado de caja: " + ex.Message);
+                }
             }
         }
-
+        /*
         private async Task UpdateSessionButton()
         {
             try
@@ -198,58 +286,39 @@ namespace WinForms.AdminForms
                 }
             }
             catch { }
-        }
+        }*/
 
-        private void clockTimer_Tick(object sender, EventArgs e)
+        private void UpdateSessionButton(bool isOpen)
         {
-            // Formato: 14/11/2025 19:16:03
-            //lblTime.Text = DateTime.Now.ToString("G");
-
-            // O si preferís solo la hora con segundos:
-            // lblReloj.Text = DateTime.Now.ToString("T"); // 19:16:03
-            lblTime.Text = DateTime.Now.ToString("HH:mm");
+            if (isOpen)
+            {
+                btnInitSession.Text = "CERRAR CAJA [F4]";
+                btnInitSession.StateCommon.Back.Color1 = Color.Salmon;
+            }
+            else
+            {
+                btnInitSession.Text = "ABRIR CAJA [F4]";
+                btnInitSession.StateCommon.Back.Color1 = Color.LightGreen;
+            }
         }
 
+        private void clockTimer_Tick(object sender, EventArgs e) => lblTime.Text = DateTime.Now.ToString("HH:mm");
 
-        private void btnInitSellMenu_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlNewSales>());
-        }
+        private void btnInitSellMenu_Click_1(object sender, EventArgs e) => OpenScreen<UserControlNewSales>();
 
-        private void btnProductsMenu_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlProducts>());
-        }
+        private void btnProductsMenu_Click_1(object sender, EventArgs e) => OpenScreen<UserControlProducts>();
 
-        private void btnSalesHistory_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlHistory>());
-        }
+        private void btnSalesHistory_Click_1(object sender, EventArgs e) => OpenScreen<UserControlHistory>();
 
-        private void btnProvidersMenu_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlProviders>());
-        }
+        private void btnProvidersMenu_Click_1(object sender, EventArgs e) => OpenScreen<UserControlProviders>();
 
-        private void btnEmployeesMenu_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlEmployees>());
-        }
+        private void btnEmployeesMenu_Click_1(object sender, EventArgs e) => OpenScreen<UserControlEmployees>();
 
-        private void btnLogsMenu_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlLogs>());
-        }
+        private void btnLogsMenu_Click_1(object sender, EventArgs e) => OpenScreen<UserControlLogs>();
 
-        private void btnPaymentMethodsMenu_Click(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlPaymentMethods>());
-        }
+        private void btnPaymentMethodsMenu_Click(object sender, EventArgs e) => OpenScreen<UserControlPaymentMethods>();
 
-        private void btnPurchaseHistory_Click_1(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlProvidersHistory>());
-        }
+        private void btnPurchaseHistory_Click_1(object sender, EventArgs e) => OpenScreen<UserControlProvidersHistory>();
 
         private void btnHome_Click_1(object sender, EventArgs e)
         {
@@ -260,22 +329,53 @@ namespace WinForms.AdminForms
                 _activeControl = null;
             }
 
+            if (_currentScope != null)
+            {
+                _currentScope.Dispose();
+                _currentScope = null;
+            }
+
             this.pnlMenu.Visible = true;
             HideNavbar();
         }
 
-        private void btnLogOutNavbar_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+        private void btnLogOutNavbar_Click(object sender, EventArgs e) => this.Close();
 
-        private void btnLogOutMenu_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+        private void btnLogOutMenu_Click(object sender, EventArgs e) => this.Close();
 
         private async void btnInitSession_Click(object sender, EventArgs e)
         {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var sessionService = scope.ServiceProvider.GetRequiredService<ISessionService>();
+                string username = _userSessionService.Username;
+
+                try
+                {
+                    bool isOpen = await sessionService.HasOpenSessionAsync(username);
+
+                    if (isOpen)
+                    {
+                        if (MessageBox.Show("¿Desea cerrar la caja actual?", "Cerrar Caja", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            await sessionService.CloseSessionAsync(username);
+                            MessageBox.Show("Caja cerrada.");
+                            UpdateSessionButton(false);
+                        }
+                    }
+                    else
+                    {
+                        if (MessageBox.Show("¿Desea abrir una nueva caja?", "Abrir Caja", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            await sessionService.OpenSessionAsync(username);
+                            MessageBox.Show("Caja abierta.");
+                            UpdateSessionButton(true);
+                        }
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show("Error al cambiar estado de caja: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            }
+            /*
             try
             {
                 string username = _userSessionService.Username;
@@ -307,27 +407,17 @@ namespace WinForms.AdminForms
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cambiar estado de caja: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }*/
         }
 
-        private void btnUsersMenu_Click(object sender, EventArgs e)
-        {
-            OpenControl(_serviceProvider.GetRequiredService<UserControlUsers>());
-        }
+        private void btnUsersMenu_Click(object sender, EventArgs e) => OpenScreen<UserControlUsers>();
 
-        private void btnSellNavbar_Click(object sender, EventArgs e)
-        {
-            btnInitSellMenu_Click_1(sender, e);
-        }
+        private void btnSettings_Click(object sender, EventArgs e) => OpenScreen<UserControlSettings>();
 
-        private void btnProductsNavbar_Click(object sender, EventArgs e)
-        {
-            btnProductsMenu_Click_1(sender, e);
-        }
+        private void btnSellNavbar_Click(object sender, EventArgs e) => btnInitSellMenu_Click_1(sender, e);
 
-        private void btnHistoryNavbar_Click(object sender, EventArgs e)
-        {
-            btnSalesHistory_Click_1(sender, e);
-        }
+        private void btnProductsNavbar_Click(object sender, EventArgs e) => btnProductsMenu_Click_1(sender, e);
+
+        private void btnHistoryNavbar_Click(object sender, EventArgs e) => btnSalesHistory_Click_1(sender, e);
     }
 }

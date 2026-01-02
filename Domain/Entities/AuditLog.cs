@@ -13,12 +13,9 @@ namespace Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public DateTime Time { get; set; }
-        public string Action { get; set; }
-        public string Entity { get; set; }
-        
-        public string Username { get; set; }
-        [ForeignKey("Username")]
-        public virtual User User {  get; set; }
+        public DateTime DateTime { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Action { get; set; } = string.Empty;
+        public string Details { get; set; } = string.Empty;
     }
 }

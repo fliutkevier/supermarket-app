@@ -15,5 +15,7 @@ namespace Application.Providers.Interfaces
         Task<ProviderDetailDto?> GetForEditAsync(string cuit);
         Task UpdateAsync(UpdateProviderDto dto);
         Task SoftDeleteAsync(string cuit);
+        Task<IEnumerable<ProviderGridDto>> GetDeletedAsync();
+        Task RestoreAsync(string cuit);
     }
 }

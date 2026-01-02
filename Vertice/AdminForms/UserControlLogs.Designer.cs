@@ -28,23 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle18 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle19 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle20 = new DataGridViewCellStyle();
             tlpHistory = new TableLayoutPanel();
-            dgvSessions = new DataGridView();
             txtFilter = new Krypton.Toolkit.KryptonTextBox();
             lblTitle = new Krypton.Toolkit.KryptonLabel();
             btnResetFilters = new Krypton.Toolkit.KryptonButton();
-            rbtDesDate = new Krypton.Toolkit.KryptonRadioButton();
-            rbtDesName = new Krypton.Toolkit.KryptonRadioButton();
-            cbxUserFilter = new Krypton.Toolkit.KryptonThemeComboBox();
-            lblSince = new Krypton.Toolkit.KryptonLabel();
-            dtpSince = new Krypton.Toolkit.KryptonDateTimePicker();
-            lblTo = new Krypton.Toolkit.KryptonLabel();
             dtpTo = new Krypton.Toolkit.KryptonDateTimePicker();
-            gbxFilters = new GroupBox();
+            lblTo = new Krypton.Toolkit.KryptonLabel();
+            dtpSince = new Krypton.Toolkit.KryptonDateTimePicker();
+            lblSince = new Krypton.Toolkit.KryptonLabel();
+            dgvLogs = new DataGridView();
+            cbxUsersFilter = new Krypton.Toolkit.KryptonComboBox();
+            btnSearch = new Krypton.Toolkit.KryptonButton();
             tlpHistory.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvSessions).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cbxUserFilter).BeginInit();
-            gbxFilters.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvLogs).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cbxUsersFilter).BeginInit();
             SuspendLayout();
             // 
             // tlpHistory
@@ -57,7 +58,6 @@
             tlpHistory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2332916F));
             tlpHistory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 11.2865553F));
             tlpHistory.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 17.6693039F));
-            tlpHistory.Controls.Add(dgvSessions, 1, 2);
             tlpHistory.Controls.Add(txtFilter, 1, 1);
             tlpHistory.Controls.Add(lblTitle, 1, 0);
             tlpHistory.Controls.Add(btnResetFilters, 6, 11);
@@ -65,8 +65,9 @@
             tlpHistory.Controls.Add(lblTo, 6, 8);
             tlpHistory.Controls.Add(dtpSince, 6, 7);
             tlpHistory.Controls.Add(lblSince, 6, 6);
-            tlpHistory.Controls.Add(cbxUserFilter, 6, 5);
-            tlpHistory.Controls.Add(gbxFilters, 6, 4);
+            tlpHistory.Controls.Add(dgvLogs, 1, 2);
+            tlpHistory.Controls.Add(cbxUsersFilter, 6, 4);
+            tlpHistory.Controls.Add(btnSearch, 6, 10);
             tlpHistory.Dock = DockStyle.Fill;
             tlpHistory.Location = new Point(0, 0);
             tlpHistory.Name = "tlpHistory";
@@ -74,30 +75,19 @@
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 4.58015251F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 4.27480936F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 13.4351149F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 4.885496F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 12.3664122F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 6.71755743F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.93893147F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 6.87022924F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 5.64885473F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 4.4274807F));
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 7.142857F));
-            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 9.160305F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 8.244275F));
+            tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 8.091603F));
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 9.770992F));
             tlpHistory.RowStyles.Add(new RowStyle(SizeType.Percent, 3.38235283F));
             tlpHistory.Size = new Size(1280, 655);
             tlpHistory.TabIndex = 1;
-            // 
-            // dgvSessions
-            // 
-            dgvSessions.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvSessions.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            tlpHistory.SetColumnSpan(dgvSessions, 5);
-            dgvSessions.Location = new Point(36, 97);
-            dgvSessions.Name = "dgvSessions";
-            tlpHistory.SetRowSpan(dgvSessions, 11);
-            dgvSessions.Size = new Size(1013, 531);
-            dgvSessions.TabIndex = 9;
             // 
             // txtFilter
             // 
@@ -108,6 +98,7 @@
             txtFilter.Name = "txtFilter";
             txtFilter.Size = new Size(343, 23);
             txtFilter.TabIndex = 8;
+            txtFilter.TextChanged += txtFilter_TextChanged;
             // 
             // lblTitle
             // 
@@ -122,91 +113,114 @@
             // 
             // btnResetFilters
             // 
-            btnResetFilters.Anchor = AnchorStyles.Bottom;
-            btnResetFilters.Location = new Point(1102, 524);
+            btnResetFilters.Anchor = AnchorStyles.None;
+            btnResetFilters.Location = new Point(1102, 519);
             btnResetFilters.Name = "btnResetFilters";
             btnResetFilters.Size = new Size(127, 40);
             btnResetFilters.TabIndex = 10;
             btnResetFilters.Values.DropDownArrowColor = Color.Empty;
             btnResetFilters.Values.Text = "Reiniciar Filtros";
-            // 
-            // rbtDesDate
-            // 
-            rbtDesDate.Anchor = AnchorStyles.None;
-            rbtDesDate.Checked = true;
-            rbtDesDate.Location = new Point(47, 22);
-            rbtDesDate.Name = "rbtDesDate";
-            rbtDesDate.Size = new Size(124, 20);
-            rbtDesDate.TabIndex = 11;
-            rbtDesDate.Values.Text = "Ordenar por Fecha";
-            // 
-            // rbtDesName
-            // 
-            rbtDesName.Anchor = AnchorStyles.None;
-            rbtDesName.Location = new Point(47, 56);
-            rbtDesName.Name = "rbtDesName";
-            rbtDesName.Size = new Size(138, 20);
-            rbtDesName.TabIndex = 12;
-            rbtDesName.Values.Text = "Ordenar por Nombre";
-            // 
-            // cbxUserFilter
-            // 
-            cbxUserFilter.Anchor = AnchorStyles.None;
-            cbxUserFilter.CueHint.CueHintText = "Buscar por Usuario";
-            cbxUserFilter.DefaultPalette = Krypton.Toolkit.PaletteMode.Microsoft365Blue;
-            cbxUserFilter.DropDownWidth = 162;
-            cbxUserFilter.Location = new Point(1085, 245);
-            cbxUserFilter.Name = "cbxUserFilter";
-            cbxUserFilter.Size = new Size(162, 22);
-            cbxUserFilter.StateCommon.ComboBox.Content.TextH = Krypton.Toolkit.PaletteRelativeAlign.Near;
-            cbxUserFilter.TabIndex = 13;
-            // 
-            // lblSince
-            // 
-            lblSince.Anchor = AnchorStyles.Bottom;
-            lblSince.Location = new Point(1143, 296);
-            lblSince.Name = "lblSince";
-            lblSince.Size = new Size(45, 20);
-            lblSince.TabIndex = 14;
-            lblSince.Values.Text = "Desde";
-            // 
-            // dtpSince
-            // 
-            dtpSince.Anchor = AnchorStyles.Top;
-            dtpSince.CalendarFirstDayOfWeek = Day.Monday;
-            dtpSince.Location = new Point(1055, 322);
-            dtpSince.Name = "dtpSince";
-            dtpSince.Size = new Size(221, 21);
-            dtpSince.TabIndex = 15;
-            // 
-            // lblTo
-            // 
-            lblTo.Anchor = AnchorStyles.Bottom;
-            lblTo.Location = new Point(1145, 390);
-            lblTo.Name = "lblTo";
-            lblTo.Size = new Size(41, 20);
-            lblTo.TabIndex = 16;
-            lblTo.Values.Text = "Hasta";
+            btnResetFilters.Click += btnResetFilters_Click;
             // 
             // dtpTo
             // 
             dtpTo.Anchor = AnchorStyles.Top;
             dtpTo.CalendarFirstDayOfWeek = Day.Monday;
-            dtpTo.Location = new Point(1055, 416);
+            dtpTo.Location = new Point(1055, 415);
             dtpTo.Name = "dtpTo";
             dtpTo.Size = new Size(221, 21);
             dtpTo.TabIndex = 17;
             // 
-            // gbxFilters
+            // lblTo
             // 
-            gbxFilters.Controls.Add(rbtDesDate);
-            gbxFilters.Controls.Add(rbtDesName);
-            gbxFilters.Dock = DockStyle.Fill;
-            gbxFilters.Location = new Point(1055, 155);
-            gbxFilters.Name = "gbxFilters";
-            gbxFilters.Size = new Size(222, 82);
-            gbxFilters.TabIndex = 18;
-            gbxFilters.TabStop = false;
+            lblTo.Anchor = AnchorStyles.Bottom;
+            lblTo.Location = new Point(1145, 389);
+            lblTo.Name = "lblTo";
+            lblTo.Size = new Size(41, 20);
+            lblTo.TabIndex = 16;
+            lblTo.Values.Text = "Hasta";
+            // 
+            // dtpSince
+            // 
+            dtpSince.Anchor = AnchorStyles.Top;
+            dtpSince.CalendarFirstDayOfWeek = Day.Monday;
+            dtpSince.Location = new Point(1055, 349);
+            dtpSince.Name = "dtpSince";
+            dtpSince.Size = new Size(221, 21);
+            dtpSince.TabIndex = 15;
+            // 
+            // lblSince
+            // 
+            lblSince.Anchor = AnchorStyles.Bottom;
+            lblSince.Location = new Point(1143, 323);
+            lblSince.Name = "lblSince";
+            lblSince.Size = new Size(45, 20);
+            lblSince.TabIndex = 14;
+            lblSince.Values.Text = "Desde";
+            // 
+            // dgvLogs
+            // 
+            dataGridViewCellStyle17.BackColor = Color.FromArgb(238, 239, 249);
+            dgvLogs.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle17;
+            dgvLogs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvLogs.BorderStyle = BorderStyle.None;
+            dgvLogs.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dataGridViewCellStyle18.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle18.BackColor = Color.FromArgb(20, 25, 70);
+            dataGridViewCellStyle18.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle18.ForeColor = Color.WhiteSmoke;
+            dataGridViewCellStyle18.SelectionBackColor = Color.FromArgb(20, 25, 70);
+            dataGridViewCellStyle18.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle18.WrapMode = DataGridViewTriState.True;
+            dgvLogs.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle18;
+            dgvLogs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            tlpHistory.SetColumnSpan(dgvLogs, 5);
+            dataGridViewCellStyle19.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle19.BackColor = SystemColors.Window;
+            dataGridViewCellStyle19.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle19.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle19.SelectionBackColor = Color.ForestGreen;
+            dataGridViewCellStyle19.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle19.WrapMode = DataGridViewTriState.False;
+            dgvLogs.DefaultCellStyle = dataGridViewCellStyle19;
+            dgvLogs.Dock = DockStyle.Fill;
+            dgvLogs.EnableHeadersVisualStyles = false;
+            dgvLogs.Location = new Point(36, 97);
+            dgvLogs.MultiSelect = false;
+            dgvLogs.Name = "dgvLogs";
+            dgvLogs.ReadOnly = true;
+            dgvLogs.RowHeadersVisible = false;
+            dataGridViewCellStyle20.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle20.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dgvLogs.RowsDefaultCellStyle = dataGridViewCellStyle20;
+            tlpHistory.SetRowSpan(dgvLogs, 11);
+            dgvLogs.RowTemplate.Height = 35;
+            dgvLogs.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvLogs.Size = new Size(1013, 530);
+            dgvLogs.TabIndex = 30;
+            // 
+            // cbxUsersFilter
+            // 
+            cbxUsersFilter.Anchor = AnchorStyles.None;
+            cbxUsersFilter.DropDownWidth = 152;
+            cbxUsersFilter.Location = new Point(1069, 216);
+            cbxUsersFilter.Name = "cbxUsersFilter";
+            cbxUsersFilter.Size = new Size(194, 22);
+            cbxUsersFilter.StateCommon.ComboBox.Content.TextH = Krypton.Toolkit.PaletteRelativeAlign.Near;
+            cbxUsersFilter.TabIndex = 31;
+            cbxUsersFilter.Text = "USUARIOS";
+            cbxUsersFilter.SelectedIndexChanged += cbxUsersFilter_SelectedIndexChanged;
+            // 
+            // btnSearch
+            // 
+            btnSearch.Anchor = AnchorStyles.Bottom;
+            btnSearch.Location = new Point(1102, 470);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(127, 40);
+            btnSearch.TabIndex = 32;
+            btnSearch.Values.DropDownArrowColor = Color.Empty;
+            btnSearch.Values.Text = "Buscar";
+            btnSearch.Click += btnSearch_Click;
             // 
             // UserControlLogs
             // 
@@ -215,19 +229,17 @@
             Controls.Add(tlpHistory);
             Name = "UserControlLogs";
             Size = new Size(1280, 655);
+            Load += UserControlLogs_Load;
             tlpHistory.ResumeLayout(false);
             tlpHistory.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvSessions).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cbxUserFilter).EndInit();
-            gbxFilters.ResumeLayout(false);
-            gbxFilters.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvLogs).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cbxUsersFilter).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private TableLayoutPanel tlpHistory;
-        private DataGridView dgvSessions;
         private Krypton.Toolkit.KryptonTextBox txtFilter;
         private Krypton.Toolkit.KryptonLabel lblTitle;
         private Krypton.Toolkit.KryptonButton btnResetFilters;
@@ -235,9 +247,8 @@
         private Krypton.Toolkit.KryptonLabel lblTo;
         private Krypton.Toolkit.KryptonDateTimePicker dtpSince;
         private Krypton.Toolkit.KryptonLabel lblSince;
-        private Krypton.Toolkit.KryptonThemeComboBox cbxUserFilter;
-        private Krypton.Toolkit.KryptonRadioButton rbtDesName;
-        private Krypton.Toolkit.KryptonRadioButton rbtDesDate;
-        private GroupBox gbxFilters;
+        private DataGridView dgvLogs;
+        private Krypton.Toolkit.KryptonComboBox cbxUsersFilter;
+        private Krypton.Toolkit.KryptonButton btnSearch;
     }
 }

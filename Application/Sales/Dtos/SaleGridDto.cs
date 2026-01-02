@@ -12,6 +12,7 @@ namespace Application.Sales.Dtos
         public DateTime Date { get; set; }
         public string PaymentMethod { get; set; }
         public decimal Total { get; set; }
+        public bool Fiscal { get; set; }
         public int ItemCount { get; set; }
         public string User { get; set; } = string.Empty;
     }

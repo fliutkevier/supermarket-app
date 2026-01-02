@@ -46,15 +46,16 @@
             tlpMenu = new TableLayoutPanel();
             btnLogOutMenu = new Krypton.Toolkit.KryptonButton();
             tableLayoutPanel2 = new TableLayoutPanel();
-            btnUsersMenu = new Krypton.Toolkit.KryptonButton();
-            btnPaymentMethodsMenu = new Krypton.Toolkit.KryptonButton();
             btnInitSellMenu = new Krypton.Toolkit.KryptonButton();
             btnProductsMenu = new Krypton.Toolkit.KryptonButton();
             btnSalesHistory = new Krypton.Toolkit.KryptonButton();
-            btnProvidersMenu = new Krypton.Toolkit.KryptonButton();
             btnEmployeesMenu = new Krypton.Toolkit.KryptonButton();
-            btnLogsMenu = new Krypton.Toolkit.KryptonButton();
             btnPurchaseHistory = new Krypton.Toolkit.KryptonButton();
+            btnPaymentMethodsMenu = new Krypton.Toolkit.KryptonButton();
+            btnProvidersMenu = new Krypton.Toolkit.KryptonButton();
+            btnLogsMenu = new Krypton.Toolkit.KryptonButton();
+            btnUsersMenu = new Krypton.Toolkit.KryptonButton();
+            btnSettings = new Krypton.Toolkit.KryptonButton();
             lblUsername = new Krypton.Toolkit.KryptonLabel();
             clockTimer = new System.Windows.Forms.Timer(components);
             pnlNavbar.SuspendLayout();
@@ -277,58 +278,34 @@
             // tableLayoutPanel2
             // 
             tableLayoutPanel2.ColumnCount = 3;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.Controls.Add(btnUsersMenu, 2, 2);
-            tableLayoutPanel2.Controls.Add(btnPaymentMethodsMenu, 0, 2);
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333359F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333359F));
             tableLayoutPanel2.Controls.Add(btnInitSellMenu, 0, 0);
             tableLayoutPanel2.Controls.Add(btnProductsMenu, 1, 0);
             tableLayoutPanel2.Controls.Add(btnSalesHistory, 2, 0);
+            tableLayoutPanel2.Controls.Add(btnLogsMenu, 2, 2);
+            tableLayoutPanel2.Controls.Add(btnUsersMenu, 2, 1);
+            tableLayoutPanel2.Controls.Add(btnSettings, 1, 3);
+            tableLayoutPanel2.Controls.Add(btnPaymentMethodsMenu, 0, 2);
             tableLayoutPanel2.Controls.Add(btnProvidersMenu, 0, 1);
-            tableLayoutPanel2.Controls.Add(btnEmployeesMenu, 1, 1);
-            tableLayoutPanel2.Controls.Add(btnLogsMenu, 2, 1);
-            tableLayoutPanel2.Controls.Add(btnPurchaseHistory, 1, 2);
+            tableLayoutPanel2.Controls.Add(btnEmployeesMenu, 1, 2);
+            tableLayoutPanel2.Controls.Add(btnPurchaseHistory, 1, 1);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(3, 52);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 3;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
+            tableLayoutPanel2.RowCount = 4;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 31.0713425F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 31.0713425F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 31.0713425F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 6.785981F));
             tableLayoutPanel2.Size = new Size(1274, 554);
             tableLayoutPanel2.TabIndex = 0;
-            // 
-            // btnUsersMenu
-            // 
-            btnUsersMenu.Anchor = AnchorStyles.None;
-            btnUsersMenu.Location = new Point(901, 385);
-            btnUsersMenu.Name = "btnUsersMenu";
-            btnUsersMenu.Size = new Size(320, 151);
-            btnUsersMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
-            btnUsersMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnUsersMenu.TabIndex = 51;
-            btnUsersMenu.Values.DropDownArrowColor = Color.Empty;
-            btnUsersMenu.Values.Text = "USUARIOS";
-            btnUsersMenu.Click += btnUsersMenu_Click;
-            // 
-            // btnPaymentMethodsMenu
-            // 
-            btnPaymentMethodsMenu.Anchor = AnchorStyles.None;
-            btnPaymentMethodsMenu.Location = new Point(52, 385);
-            btnPaymentMethodsMenu.Name = "btnPaymentMethodsMenu";
-            btnPaymentMethodsMenu.Size = new Size(320, 151);
-            btnPaymentMethodsMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
-            btnPaymentMethodsMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnPaymentMethodsMenu.TabIndex = 50;
-            btnPaymentMethodsMenu.Values.DropDownArrowColor = Color.Empty;
-            btnPaymentMethodsMenu.Values.Text = "MÉTODOS DE PAGO";
-            btnPaymentMethodsMenu.Click += btnPaymentMethodsMenu_Click;
             // 
             // btnInitSellMenu
             // 
             btnInitSellMenu.Anchor = AnchorStyles.None;
-            btnInitSellMenu.Location = new Point(52, 16);
+            btnInitSellMenu.Location = new Point(52, 10);
             btnInitSellMenu.Name = "btnInitSellMenu";
             btnInitSellMenu.Size = new Size(320, 151);
             btnInitSellMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
@@ -341,7 +318,7 @@
             // btnProductsMenu
             // 
             btnProductsMenu.Anchor = AnchorStyles.None;
-            btnProductsMenu.Location = new Point(476, 16);
+            btnProductsMenu.Location = new Point(476, 10);
             btnProductsMenu.Name = "btnProductsMenu";
             btnProductsMenu.Size = new Size(320, 151);
             btnProductsMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
@@ -354,7 +331,7 @@
             // btnSalesHistory
             // 
             btnSalesHistory.Anchor = AnchorStyles.None;
-            btnSalesHistory.Location = new Point(901, 16);
+            btnSalesHistory.Location = new Point(901, 10);
             btnSalesHistory.Name = "btnSalesHistory";
             btnSalesHistory.Size = new Size(320, 151);
             btnSalesHistory.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
@@ -364,24 +341,10 @@
             btnSalesHistory.Values.Text = "HISTORIAL DE VENTAS";
             btnSalesHistory.Click += btnSalesHistory_Click_1;
             // 
-            // btnProvidersMenu
-            // 
-            btnProvidersMenu.Anchor = AnchorStyles.None;
-            btnProvidersMenu.Enabled = false;
-            btnProvidersMenu.Location = new Point(52, 200);
-            btnProvidersMenu.Name = "btnProvidersMenu";
-            btnProvidersMenu.Size = new Size(320, 151);
-            btnProvidersMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
-            btnProvidersMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnProvidersMenu.TabIndex = 45;
-            btnProvidersMenu.Values.DropDownArrowColor = Color.Empty;
-            btnProvidersMenu.Values.Text = "PROVEEDORES";
-            btnProvidersMenu.Click += btnProvidersMenu_Click_1;
-            // 
             // btnEmployeesMenu
             // 
             btnEmployeesMenu.Anchor = AnchorStyles.None;
-            btnEmployeesMenu.Location = new Point(476, 200);
+            btnEmployeesMenu.Location = new Point(476, 354);
             btnEmployeesMenu.Name = "btnEmployeesMenu";
             btnEmployeesMenu.Size = new Size(320, 151);
             btnEmployeesMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
@@ -391,11 +354,49 @@
             btnEmployeesMenu.Values.Text = "EMPLEADOS";
             btnEmployeesMenu.Click += btnEmployeesMenu_Click_1;
             // 
+            // btnPurchaseHistory
+            // 
+            btnPurchaseHistory.Anchor = AnchorStyles.None;
+            btnPurchaseHistory.Location = new Point(476, 182);
+            btnPurchaseHistory.Name = "btnPurchaseHistory";
+            btnPurchaseHistory.Size = new Size(320, 151);
+            btnPurchaseHistory.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnPurchaseHistory.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPurchaseHistory.TabIndex = 49;
+            btnPurchaseHistory.Values.DropDownArrowColor = Color.Empty;
+            btnPurchaseHistory.Values.Text = "HISTORIAL DE COMPRAS";
+            btnPurchaseHistory.Click += btnPurchaseHistory_Click_1;
+            // 
+            // btnPaymentMethodsMenu
+            // 
+            btnPaymentMethodsMenu.Anchor = AnchorStyles.None;
+            btnPaymentMethodsMenu.Location = new Point(52, 354);
+            btnPaymentMethodsMenu.Name = "btnPaymentMethodsMenu";
+            btnPaymentMethodsMenu.Size = new Size(320, 151);
+            btnPaymentMethodsMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnPaymentMethodsMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPaymentMethodsMenu.TabIndex = 50;
+            btnPaymentMethodsMenu.Values.DropDownArrowColor = Color.Empty;
+            btnPaymentMethodsMenu.Values.Text = "MÉTODOS DE PAGO";
+            btnPaymentMethodsMenu.Click += btnPaymentMethodsMenu_Click;
+            // 
+            // btnProvidersMenu
+            // 
+            btnProvidersMenu.Anchor = AnchorStyles.None;
+            btnProvidersMenu.Location = new Point(52, 182);
+            btnProvidersMenu.Name = "btnProvidersMenu";
+            btnProvidersMenu.Size = new Size(320, 151);
+            btnProvidersMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnProvidersMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnProvidersMenu.TabIndex = 45;
+            btnProvidersMenu.Values.DropDownArrowColor = Color.Empty;
+            btnProvidersMenu.Values.Text = "PROVEEDORES";
+            btnProvidersMenu.Click += btnProvidersMenu_Click_1;
+            // 
             // btnLogsMenu
             // 
             btnLogsMenu.Anchor = AnchorStyles.None;
-            btnLogsMenu.Enabled = false;
-            btnLogsMenu.Location = new Point(901, 200);
+            btnLogsMenu.Location = new Point(901, 354);
             btnLogsMenu.Name = "btnLogsMenu";
             btnLogsMenu.Size = new Size(320, 151);
             btnLogsMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
@@ -405,19 +406,31 @@
             btnLogsMenu.Values.Text = "REGISTROS";
             btnLogsMenu.Click += btnLogsMenu_Click_1;
             // 
-            // btnPurchaseHistory
+            // btnUsersMenu
             // 
-            btnPurchaseHistory.Anchor = AnchorStyles.None;
-            btnPurchaseHistory.Enabled = false;
-            btnPurchaseHistory.Location = new Point(476, 385);
-            btnPurchaseHistory.Name = "btnPurchaseHistory";
-            btnPurchaseHistory.Size = new Size(320, 151);
-            btnPurchaseHistory.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
-            btnPurchaseHistory.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnPurchaseHistory.TabIndex = 49;
-            btnPurchaseHistory.Values.DropDownArrowColor = Color.Empty;
-            btnPurchaseHistory.Values.Text = "HISTORIAL DE COMPRAS";
-            btnPurchaseHistory.Click += btnPurchaseHistory_Click_1;
+            btnUsersMenu.Anchor = AnchorStyles.None;
+            btnUsersMenu.Location = new Point(901, 182);
+            btnUsersMenu.Name = "btnUsersMenu";
+            btnUsersMenu.Size = new Size(320, 151);
+            btnUsersMenu.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnUsersMenu.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnUsersMenu.TabIndex = 51;
+            btnUsersMenu.Values.DropDownArrowColor = Color.Empty;
+            btnUsersMenu.Values.Text = "USUARIOS";
+            btnUsersMenu.Click += btnUsersMenu_Click;
+            // 
+            // btnSettings
+            // 
+            btnSettings.Anchor = AnchorStyles.None;
+            btnSettings.Location = new Point(557, 520);
+            btnSettings.Name = "btnSettings";
+            btnSettings.Size = new Size(157, 30);
+            btnSettings.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnSettings.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnSettings.TabIndex = 52;
+            btnSettings.Values.DropDownArrowColor = Color.Empty;
+            btnSettings.Values.Text = "AJUSTES";
+            btnSettings.Click += btnSettings_Click;
             // 
             // lblUsername
             // 
@@ -496,5 +509,6 @@
         private Krypton.Toolkit.KryptonButton btnLogsMenu;
         private Krypton.Toolkit.KryptonButton btnPaymentMethodsMenu;
         private Krypton.Toolkit.KryptonButton btnUsersMenu;
+        private Krypton.Toolkit.KryptonButton btnSettings;
     }
 }

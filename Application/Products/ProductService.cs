@@ -1,4 +1,5 @@
-﻿using Application.Products.Dtos;
+﻿using Application.AuditLogs.Interfaces;
+using Application.Products.Dtos;
 using Application.Products.Interfaces;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -14,13 +15,16 @@ namespace Application.Products
     {
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuditLogService _auditLogService;
 
         public ProductService(
             IProductRepository productRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IAuditLogService auditLogService)
         {
             _productRepository = productRepository;
             _unitOfWork = unitOfWork;
+            _auditLogService = auditLogService;
         }
 
         public async Task CreateProductAsync(CreateProductDto dto)
@@ -45,6 +49,7 @@ namespace Application.Products
             };
 
             await _productRepository.AddAsync(newProduct);
+            await _auditLogService.LogAsync("PRODUCTO Creado", $"Código: {newProduct.Code}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -82,6 +87,34 @@ namespace Application.Products
             };
         }
 
+        public async Task<IEnumerable<ProductGridDto>> GetDeletedAsync()
+        {
+            var deletedProducts = await _productRepository.GetAsync(p => !p.IsActive);
+
+            return deletedProducts.Select(p => new ProductGridDto
+            {
+                Code = p.Code,
+                Name = p.Name,
+                SalePrice = p.SalePrice,
+                CostPrice = p.CostPrice,
+                Stock = p.Stock,
+                LastStockUpdate = p.LastStockUpdate
+            });
+        }
+
+        public async Task RestoreAsync(string code)
+        {
+            var product = await _productRepository.GetByCodeAsync(code);
+
+            if (product == null) throw new InvalidOperationException("Producto no encontrado.");
+
+            product.IsActive = true;
+
+            _productRepository.Update(product);
+            await _auditLogService.LogAsync("PRODUCTO Restaurado", $"Código: {product.Code}");
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task SoftDeleteProductAsync(string code)
         {
             var product = await _productRepository.GetByCodeAsync(code);
@@ -94,6 +127,7 @@ namespace Application.Products
             product.IsActive = false;
 
             _productRepository.Update(product);
+            await _auditLogService.LogAsync("PRODUCTO Dado de baja", $"Código: {product.Code}");
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -116,6 +150,7 @@ namespace Application.Products
             product.IsActive = dto.IsActive;
             
             _productRepository.Update(product);
+            await _auditLogService.LogAsync("PRODUCTO Modificado", $"Código: {product.Code}");
             await _unitOfWork.SaveChangesAsync();
         }
     }

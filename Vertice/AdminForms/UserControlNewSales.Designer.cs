@@ -47,6 +47,7 @@
             txtCash = new Krypton.Toolkit.KryptonTextBox();
             txtVariosAmount = new Krypton.Toolkit.KryptonTextBox();
             btnAddVarious = new Krypton.Toolkit.KryptonButton();
+            btnReset = new Krypton.Toolkit.KryptonButton();
             tlpSales.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvSaleProducts).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cbxPaymentMethod).BeginInit();
@@ -77,6 +78,7 @@
             tlpSales.Controls.Add(txtCash, 5, 5);
             tlpSales.Controls.Add(txtVariosAmount, 5, 6);
             tlpSales.Controls.Add(btnAddVarious, 6, 6);
+            tlpSales.Controls.Add(btnReset, 3, 12);
             tlpSales.Dock = DockStyle.Fill;
             tlpSales.Location = new Point(0, 0);
             tlpSales.Name = "tlpSales";
@@ -143,11 +145,11 @@
             // lblSubTotal
             // 
             lblSubTotal.Anchor = AnchorStyles.Top;
-            lblSubTotal.Location = new Point(853, 416);
+            lblSubTotal.Location = new Point(841, 416);
             lblSubTotal.Name = "lblSubTotal";
             tlpSales.SetRowSpan(lblSubTotal, 2);
-            lblSubTotal.Size = new Size(125, 33);
-            lblSubTotal.StateCommon.ShortText.Font = new Font("Arial Narrow", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblSubTotal.Size = new Size(149, 33);
+            lblSubTotal.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblSubTotal.TabIndex = 13;
             lblSubTotal.Values.Text = "SUBTOTAL";
             // 
@@ -155,21 +157,23 @@
             // 
             lblTotal.Anchor = AnchorStyles.Top;
             tlpSales.SetColumnSpan(lblTotal, 2);
-            lblTotal.Location = new Point(887, 93);
+            lblTotal.Location = new Point(803, 93);
             lblTotal.Name = "lblTotal";
             tlpSales.SetRowSpan(lblTotal, 2);
-            lblTotal.Size = new Size(261, 47);
-            lblTotal.StateCommon.ShortText.Font = new Font("Arial Narrow", 26.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTotal.Size = new Size(429, 62);
+            lblTotal.StateCommon.ShortText.Color1 = Color.Green;
+            lblTotal.StateCommon.ShortText.Font = new Font("Arial", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotal.TabIndex = 12;
             lblTotal.Values.Text = "TOTAL A PAGAR";
             // 
             // lblChange
             // 
             lblChange.Anchor = AnchorStyles.Top;
-            lblChange.Location = new Point(1084, 416);
+            lblChange.Location = new Point(1063, 416);
             lblChange.Name = "lblChange";
-            lblChange.Size = new Size(97, 33);
-            lblChange.StateCommon.ShortText.Font = new Font("Arial Narrow", 18F, FontStyle.Bold);
+            lblChange.Size = new Size(139, 39);
+            lblChange.StateCommon.ShortText.Color1 = Color.Red;
+            lblChange.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 21.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblChange.TabIndex = 15;
             lblChange.Values.Text = "VUELTO";
             // 
@@ -182,7 +186,7 @@
             btnOnlySale.Size = new Size(160, 31);
             btnOnlySale.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnOnlySale.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnOnlySale.TabIndex = 37;
+            btnOnlySale.TabIndex = 4;
             btnOnlySale.Values.DropDownArrowColor = Color.Empty;
             btnOnlySale.Values.Text = "REALIZAR VENTA";
             btnOnlySale.Click += btnOnlySale_Click;
@@ -196,7 +200,7 @@
             btnSaleTicket.Size = new Size(160, 40);
             btnSaleTicket.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnSaleTicket.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSaleTicket.TabIndex = 38;
+            btnSaleTicket.TabIndex = 5;
             btnSaleTicket.Values.DropDownArrowColor = Color.Empty;
             btnSaleTicket.Values.Text = "VENTA + TICKET";
             btnSaleTicket.Click += btnSaleTicket_Click;
@@ -210,7 +214,7 @@
             btnSaleAFIP.Size = new Size(160, 38);
             btnSaleAFIP.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnSaleAFIP.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSaleAFIP.TabIndex = 39;
+            btnSaleAFIP.TabIndex = 6;
             btnSaleAFIP.Values.DropDownArrowColor = Color.Empty;
             btnSaleAFIP.Values.Text = "FACTURAR";
             btnSaleAFIP.Click += btnSaleAFIP_Click;
@@ -233,19 +237,19 @@
             // 
             tlpSales.SetColumnSpan(txtProduct, 4);
             txtProduct.CueHint.CueHintText = "PRODUCTO";
-            txtProduct.CueHint.Font = new Font("Arial Narrow", 20F, FontStyle.Bold);
+            txtProduct.CueHint.Font = new Font("Microsoft Sans Serif", 20F, FontStyle.Bold);
             txtProduct.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtProduct.Dock = DockStyle.Fill;
             txtProduct.Location = new Point(25, 11);
             txtProduct.Name = "txtProduct";
-            txtProduct.Size = new Size(772, 79);
-            txtProduct.StateActive.Content.Font = new Font("Arial Narrow", 50F, FontStyle.Bold);
+            txtProduct.Size = new Size(772, 78);
+            txtProduct.StateActive.Content.Font = new Font("Microsoft Sans Serif", 50F, FontStyle.Bold);
             txtProduct.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtProduct.StateCommon.Border.Width = 2;
             txtProduct.StateCommon.Content.Font = new Font("Arial", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtProduct.StateCommon.Content.Padding = new Padding(1, 1, 1, -3);
             txtProduct.StateNormal.Content.Font = new Font("Arial", 36F, FontStyle.Bold);
-            txtProduct.TabIndex = 42;
+            txtProduct.TabIndex = 0;
             txtProduct.TextAlign = HorizontalAlignment.Center;
             txtProduct.KeyDown += txtProduct_KeyDown;
             // 
@@ -257,7 +261,7 @@
             lblLastProduct.Name = "lblLastProduct";
             lblLastProduct.Size = new Size(6, 5);
             lblLastProduct.StateCommon.Padding = new Padding(-1, 4, -1, 1);
-            lblLastProduct.StateCommon.ShortText.Font = new Font("Arial Narrow", 50F, FontStyle.Bold);
+            lblLastProduct.StateCommon.ShortText.Font = new Font("Microsoft Sans Serif", 50F, FontStyle.Bold);
             lblLastProduct.TabIndex = 43;
             lblLastProduct.Values.Text = "";
             // 
@@ -270,7 +274,7 @@
             cbxPaymentMethod.Name = "cbxPaymentMethod";
             cbxPaymentMethod.Size = new Size(164, 22);
             cbxPaymentMethod.StateCommon.ComboBox.Content.TextH = Krypton.Toolkit.PaletteRelativeAlign.Near;
-            cbxPaymentMethod.TabIndex = 11;
+            cbxPaymentMethod.TabIndex = 1;
             cbxPaymentMethod.Text = "Método de pago";
             cbxPaymentMethod.SelectedIndexChanged += cbxPaymentMethod_SelectedIndexChanged;
             // 
@@ -279,17 +283,17 @@
             txtCash.Anchor = AnchorStyles.None;
             tlpSales.SetColumnSpan(txtCash, 2);
             txtCash.CueHint.CueHintText = "INGRESAR EFECTIVO";
-            txtCash.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCash.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtCash.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtCash.Location = new Point(887, 260);
             txtCash.Name = "txtCash";
             txtCash.Size = new Size(260, 47);
-            txtCash.StateActive.Content.Font = new Font("Arial Narrow", 15F, FontStyle.Bold);
+            txtCash.StateActive.Content.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Bold);
             txtCash.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtCash.StateCommon.Border.Width = 2;
-            txtCash.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtCash.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtCash.StateCommon.Content.Padding = new Padding(1, 10, 1, 10);
-            txtCash.TabIndex = 36;
+            txtCash.TabIndex = 2;
             txtCash.TextAlign = HorizontalAlignment.Center;
             txtCash.TextChanged += txtCash_TextChanged;
             // 
@@ -297,31 +301,46 @@
             // 
             txtVariosAmount.Anchor = AnchorStyles.Right;
             txtVariosAmount.CueHint.CueHintText = "INGRESAR PRECIO";
-            txtVariosAmount.CueHint.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtVariosAmount.CueHint.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtVariosAmount.CueHint.TextH = Krypton.Toolkit.PaletteRelativeAlign.Center;
             txtVariosAmount.Location = new Point(839, 312);
             txtVariosAmount.Name = "txtVariosAmount";
             txtVariosAmount.Size = new Size(189, 47);
-            txtVariosAmount.StateActive.Content.Font = new Font("Arial Narrow", 15F, FontStyle.Bold);
+            txtVariosAmount.StateActive.Content.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Bold);
             txtVariosAmount.StateCommon.Border.Color1 = Color.FromArgb(48, 159, 250);
             txtVariosAmount.StateCommon.Border.Width = 2;
-            txtVariosAmount.StateCommon.Content.Font = new Font("Arial Narrow", 11.75F, FontStyle.Bold);
+            txtVariosAmount.StateCommon.Content.Font = new Font("Microsoft Sans Serif", 11.75F, FontStyle.Bold);
             txtVariosAmount.StateCommon.Content.Padding = new Padding(1, 10, 1, 10);
-            txtVariosAmount.TabIndex = 44;
+            txtVariosAmount.TabIndex = 3;
             txtVariosAmount.TextAlign = HorizontalAlignment.Center;
+            txtVariosAmount.KeyDown += txtVariosAmount_KeyDown;
             // 
             // btnAddVarious
             // 
             btnAddVarious.Anchor = AnchorStyles.Left;
             btnAddVarious.Location = new Point(1034, 319);
             btnAddVarious.Name = "btnAddVarious";
-            btnAddVarious.Size = new Size(46, 31);
+            btnAddVarious.Size = new Size(113, 31);
             btnAddVarious.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
             btnAddVarious.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddVarious.TabIndex = 45;
             btnAddVarious.Values.DropDownArrowColor = Color.Empty;
-            btnAddVarious.Values.Text = "+";
+            btnAddVarious.Values.Text = "AGREGAR";
             btnAddVarious.Click += btnAddVarious_Click;
+            // 
+            // btnReset
+            // 
+            btnReset.Anchor = AnchorStyles.None;
+            tlpSales.SetColumnSpan(btnReset, 2);
+            btnReset.Location = new Point(536, 601);
+            btnReset.Name = "btnReset";
+            btnReset.Size = new Size(208, 38);
+            btnReset.StateCommon.Back.Color1 = Color.FromArgb(160, 205, 254);
+            btnReset.StateCommon.Content.ShortText.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnReset.TabIndex = 7;
+            btnReset.Values.DropDownArrowColor = Color.Empty;
+            btnReset.Values.Text = "CANCELAR VENTA";
+            btnReset.Click += btnReset_Click;
             // 
             // UserControlNewSales
             // 
@@ -356,5 +375,6 @@
         private Krypton.Toolkit.KryptonLabel lblLastProduct;
         private Krypton.Toolkit.KryptonTextBox txtVariosAmount;
         private Krypton.Toolkit.KryptonButton btnAddVarious;
+        private Krypton.Toolkit.KryptonButton btnReset;
     }
 }

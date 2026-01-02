@@ -15,5 +15,7 @@ namespace Application.Employees.Interfaces
         Task UpdateAsync(UpdateEmployeeDto dto);
         Task SoftDeleteAsync(string dni);
         Task<IEnumerable<EmployeeLookupDto>> GetEmployeesWithoutUserAsync();
+        Task<IEnumerable<EmployeeGridDto>> GetDeletedAsync();
+        Task RestoreAsync(string dni);
     }
 }
